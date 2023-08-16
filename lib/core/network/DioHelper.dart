@@ -32,12 +32,13 @@ class DioHelper {
   static Future<Response>postData( {
    required String url,
    required data,
-    String? token,
     Map<String, dynamic>? query,
   })async{
     Response response;
     dio.options.headers = {
-      'auth-token': token,
+      'Authorization': "Bearer "+"$token",
+      "Content-Type":"application/json",
+
     };
     try {
       response = await dio.post(

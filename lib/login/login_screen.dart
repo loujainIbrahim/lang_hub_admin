@@ -11,6 +11,7 @@ import '../core/network/cache_helper.dart';
 import '../core/shared.dart';
 import '../core/widgets/alert.dart';
 import '../core/widgets/default_button.dart';
+import '../core/widgets/snake_bar_widget.dart';
 import '../core/widgets/text_button.dart';
 import '../core/widgets/text_field.dart';
 import '../home/home_screen.dart';
@@ -28,15 +29,20 @@ class LoginScreen extends StatelessWidget {
       child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccessState) {
-            html.window.localStorage['auth_token'] = state.loginModel.token!;
-            token=state.loginModel.token!;
-            Navigator.pushReplacement(context,
+           if(state.loginModel.token != null) {
+              html.window.localStorage['auth_token'] = state.loginModel.token!;
+              token = state.loginModel.token!;
+              ErrorSnackBar.show(context, "successfully login");
+              Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => HomeScreen()));
 
-            print("from model");
-       print(state.loginModel.token);
-       print("from cache");
-       print(token);
+              print("from model");
+              print(state.loginModel.token);
+              print("from cache");
+              print(token);
+            }else  {
+             showAlertDialog(context, "email or password not correct");
+           }
           } else if(state is LoginErrorState){
               showAlertDialog(context, "email or password not correct");
             }

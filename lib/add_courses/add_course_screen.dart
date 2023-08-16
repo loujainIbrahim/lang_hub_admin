@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:html';
 import 'dart:html' as html;
 import 'dart:typed_data';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
@@ -40,11 +41,10 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       create: (context) => AddCourseCubit(),
       child: BlocConsumer<AddCourseCubit, AddCourseState>(
         listener: (context, state) {
-          // TODO: implement listener
-          if(state is AddCourseError){
+// TODO: implement listener
+          if (state is AddCourseError) {
             print(state.error);
-          }
-          else if(state is AddCourseSuccess){
+          } else if (state is AddCourseSuccess) {
             print("is correct");
           }
         },
@@ -83,7 +83,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     children: [
                       Container(
                         width: ScreenUtil().setWidth(1844),
-                        height: ScreenUtil().setHeight(80),
+                        height: ScreenUtil().setHeight(90),
                         child: Text(
                           "You can now add a level to your educational series and add your level information to be fixed,"
                           "and then you add variable information such as the price, number of seats, start and end date,"
@@ -101,7 +101,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+// mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 40.0),
@@ -119,15 +119,15 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                               borderRadius: BorderRadius.circular(10),
                               child: (_imageData != null)
                                   ? Container(
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: MemoryImage(_imageData!),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              )
+                                      width: 200,
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: MemoryImage(_imageData!),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    )
                                   : Center(
                                       child: IconButton(
                                         icon: Icon(
@@ -161,7 +161,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+// mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 60.0),
@@ -224,22 +224,30 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 20.0),
                   child: ConditionalBuilder(
-                    condition:state is! AddCourseLoading ,
-                    fallback: (context)=>CircularProgressIndicator(),
-                    builder:(context)=> elevate_button(
+                    condition: state is! AddCourseLoading,
+                    fallback: (context) => CircularProgressIndicator(),
+                    builder: (context) => elevate_button(
                         width: 305,
                         height: 65,
                         backround: mainColor,
                         text: 'Add',
-                        function: () async{
+                        function: () async {
                           var num = int.parse(numberOfHours.text);
+                          print(nameCourse.text);
+                          print(description.text);
+                          print(num);
+                          print(_selectedItem);
+                          print(_pickedFile);
+                          print(_imageData);
                           AddCourseCubit.get(context).AddCourse(
-                              name: nameCourse.text,
-                              description: description.text,
-                              hours: num,
-                              language: _selectedItem,
-                              course_image: _pickedFile, pickedFile: _pickedFile, imageData: _imageData,
-                              );
+                            name: nameCourse.text,
+                            description: description.text,
+                            hours: num,
+                            language: _selectedItem,
+                            course_image: _pickedFile!,
+                            pickedFile: _pickedFile!,
+                            imageData: _imageData,
+                          );
                         }),
                   ),
                 ),
@@ -251,17 +259,16 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     );
   }
 
-  late html.File _pickedFile;
+  html.File? _pickedFile;
   Uint8List? _imageData;
-
   void _pickImage() async {
     final input = html.FileUploadInputElement();
-    input.accept = 'image/*';
+    input.accept = 'image/';
     input.click();
     await input.onChange.first;
     _pickedFile = input.files!.first;
     final reader = html.FileReader();
-    reader.readAsArrayBuffer(_pickedFile);
+    reader.readAsArrayBuffer(_pickedFile!);
     reader.onLoadEnd.listen((event) {
       setState(() {
         _imageData = reader.result as Uint8List?;
@@ -272,7 +279,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   Future<String> getImageAsBase64() async {
     final completer = Completer<String>();
     final input = html.FileUploadInputElement();
-    input.accept = 'image/*';
+    input.accept = 'image/';
     input.onChange.listen((event) {
       final file = input.files!.first;
       final reader = html.FileReader();

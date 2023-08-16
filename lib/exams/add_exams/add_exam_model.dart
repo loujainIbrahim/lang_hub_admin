@@ -19,7 +19,7 @@ class QuestionModel {
       "choise1": choise1,
       "choise2": choise2,
       "choise3": choise3,
-      "correct_choise": correctChoise,
+      "correct_choise": correctChoise, // corrected key name
     };
   }
 }

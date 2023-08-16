@@ -55,7 +55,10 @@ class _HomeScreen extends State<HomeScreen> {
               actions: [
                 MaterialButton(
                   onPressed: () {
-                    scaffoldKey.currentState?.openEndDrawer();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -95,10 +98,10 @@ class _HomeScreen extends State<HomeScreen> {
                         children: [
                           SizeBarItem(text: 'students', index: 0),
                           SizeBarItem(text: 'teachers', index: 1),
-                          SizeBarItem(text: 'Languages and offers', index: 2),
+                          SizeBarItem(text: 'Languages and courses', index: 2),
                           SizeBarItem(text: 'courses activation', index: 3),
                           SizeBarItem(text: 'joining requests', index: 4),
-                          SizeBarItem(text: 'Exams', index: 5),
+                          SizeBarItem(text: 'offers', index: 5),
                           SizeBarItem(text: 'feedback', index: 6),
                           SizeBarItem(text: "Update time the wait", index: 7),
                         ],

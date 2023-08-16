@@ -38,77 +38,81 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
         return Scaffold(
           body: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  elevate_button(
-                      width: 238,
-                      height: 54,
-                      backround: english ? mainColor : ff5C3A81,
-                      text: "English",
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    elevate_button(
+                        width: 238,
+                        height: 54,
+                        backround: english ? mainColor : ff5C3A81,
+                        text: "English",
+                        function: () {
+                          setState(() {
+                            english = true;
+                            french = false;
+                            germeny = false;
+                            spanish = false;
+                          });
+                          print(english);
+                          print(french);
+                          ActiveCourseCubit.get(context)
+                              .getActiveCourses("english");
+                        }),
+                    elevate_button(
+                      text: "Spanish",
                       function: () {
                         setState(() {
-                          english = true;
+                          english = false;
                           french = false;
                           germeny = false;
-                          spanish = false;
+                          spanish = true;
                         });
                         print(english);
                         print(french);
+                        print(spanish);
                         ActiveCourseCubit.get(context)
-                            .getActiveCourses("english");
-                      }),
-                  elevate_button(
-                    text: "Spanish",
-                    function: () {
-                      setState(() {
-                        english = false;
-                        french = false;
-                        germeny = false;
-                        spanish = true;
-                      });
-                      print(english);
-                      print(french);
-                      print(spanish);
-                      ActiveCourseCubit.get(context)
-                          .getActiveCourses("spanish");
-                    },
-                    backround: spanish ? mainColor : ff5C3A81,
-                  ),
-                  elevate_button(
-                      backround: germeny! ? mainColor : ff5C3A81,
-                      text: "germany",
-                      function: () {
-                        setState(() {
-                          english = false;
-                          french = false;
-                          germeny = true;
-                          spanish = false;
-                        });
-                        ActiveCourseCubit.get(context)
-                            .getActiveCourses("germany");
-                      }),
-                  elevate_button(
-                      backround: french! ? mainColor : ff5C3A81,
-                      text: "french",
-                      function: () {
-                        setState(() {
-                          english = false;
-                          french = true;
-                          germeny = false;
-                          spanish = false;
-                        });
-                        ActiveCourseCubit.get(context)
-                            .getActiveCourses("french");
-                      }),
-                  elevate_button(
-                      backround: mainColor, text: "offers", function: () {}),
-                ],
+                            .getActiveCourses("spanish");
+                      },
+                      backround: spanish ? mainColor : ff5C3A81,
+                    ),
+                    elevate_button(
+                        backround: germeny! ? mainColor : ff5C3A81,
+                        text: "germany",
+                        function: () {
+                          setState(() {
+                            english = false;
+                            french = false;
+                            germeny = true;
+                            spanish = false;
+                          });
+                          ActiveCourseCubit.get(context)
+                              .getActiveCourses("germany");
+                        }),
+                    elevate_button(
+                        backround: french! ? mainColor : ff5C3A81,
+                        text: "french",
+                        function: () {
+                          setState(() {
+                            english = false;
+                            french = true;
+                            germeny = false;
+                            spanish = false;
+                          });
+                          ActiveCourseCubit.get(context)
+                              .getActiveCourses("french");
+                        }),
+                  ],
+                ),
               ),
               ConditionalBuilder(
                   condition: state is! ActiveCourseLoadingState,
-                  fallback: (context) => Center(
-                        child: CircularProgressIndicator(),
+                  fallback: (context) => Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
                   builder: (context) {
                     final activate_model =
@@ -149,7 +153,7 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
   Widget BuildItemListView(
       BuildContext context,
       int id,
-      String image,
+      String? image,
       String name,
       String given,
       int price,
@@ -165,127 +169,132 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => CourseDetailsScreen()));
       },
-      child: Container(
-        width: ScreenUtil().setWidth(286),
-        height: ScreenUtil().setHeight(353),
-        decoration: BoxDecoration(
-          color: fillColorInTextFormField,
-          border: Border.all(
-            color: Colors.grey,
-            width: 1.0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: ScreenUtil().setWidth(286),
+          height: ScreenUtil().setHeight(353),
+          decoration: BoxDecoration(
+            color: fillColorInTextFormField,
+            border: Border.all(
+              color: Colors.grey,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(30.0),
           ),
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(30),
-                    topLeft: Radius.circular(30)),
-              ),
-              width: double.infinity,
-              height: ScreenUtil().setHeight(163),
-              child: ClipRRect(
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(30),
                       topLeft: Radius.circular(30)),
-                  child: (image == null)
-                      ? Container(
-                          child: Image.network(
-                              "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg"),
-                        )
-                      : Image.network(
-                          image,
-                          fit: BoxFit.cover,
-                        )),
-            ),
-            Column(
-              //  crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
+                ),
+                width: double.infinity,
+                height: ScreenUtil().setHeight(163),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(30),
+                        topLeft: Radius.circular(30)),
+                    child: (image == "")
+                        ? Container(
+                      color: Colors.blue,
+
+                          )
+                        : Image.network(
+                            image!,
+                            fit: BoxFit.cover,
+                          )),
+              ),
+              Column(
+                //  crossAxisAlignment: CrossAxisAlignment.start,
+                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                        fontSize: ScreenUtil().setSp(22), // smaller font size
+                        color: mainColor,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "given by " + given,
+                    style: TextStyle(
                       fontSize: ScreenUtil().setSp(22), // smaller font size
                       color: mainColor,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "given by " + given,
-                  style: TextStyle(
-                    fontSize: ScreenUtil().setSp(22), // smaller font size
-                    color: mainColor,
-                  ),
-                ),
-                Text(
-                  numberString + " s.p",
-                  style: TextStyle(
-                    fontSize: ScreenUtil().setSp(22), // smaller font size
-                    color: mainColor,
-                  ),
-                ),
-                Text(
-                  "number of students: " + num,
-                  style: TextStyle(
-                      fontSize: ScreenUtil().setSp(22), // smaller font size
-                      color: mainColor),
-                ),
-                Text(
-                  "number of seats: " + seats,
-                  style: TextStyle(
-                      fontSize: ScreenUtil().setSp(22), // smaller font size
-                      color: mainColor),
-                ),
-                Text(
-                  "start " + start,
-                  style: TextStyle(
-                    fontSize: ScreenUtil().setSp(22), // smaller font size
-                    color: mainColor,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "end " + end,
-                      style: TextStyle(
-                        fontSize: ScreenUtil().setSp(23), // smaller font size
-                        color: mainColor,
-                      ),
                     ),
-                    (hasExam == 0)
-                        ? elevate_button(
-                            fontSizeText: 12,
-                            radius: 10,
-                            width: 18,
-                            height: 30,
-                            backround: mainColor,
-                            text: "add exam",
-                            function: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddExamsScreen(
-                                            id: id,
-                                          )));
-                            })
-                        : elevate_button(
-                            fontSizeText: 12,
-                            radius: 10,
-                            width: 18,
-                            height: 30,
-                            backround: ff5C3A81,
-                            text: "add exam",
-                            function: () {})
-                  ],
-                ),
-              ],
-            ),
-          ],
+                  ),
+                  Text(
+                    numberString + " s.p",
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(22), // smaller font size
+                      color: mainColor,
+                    ),
+                  ),
+                  Text(
+                    "number of students: " + num,
+                    style: TextStyle(
+                        fontSize: ScreenUtil().setSp(22), // smaller font size
+                        color: mainColor),
+                  ),
+                  Text(
+                    "number of seats: " + seats,
+                    style: TextStyle(
+                        fontSize: ScreenUtil().setSp(22), // smaller font size
+                        color: mainColor),
+                  ),
+                  Text(
+                    "start " + start,
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(22), // smaller font size
+                      color: mainColor,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "end " + end,
+                        style: TextStyle(
+                          fontSize: ScreenUtil().setSp(22), // smaller font size
+                          color: mainColor,
+                        ),
+                      ),
+                      SizedBox(width: 2,),
+                      (hasExam == 0)
+                          ? elevate_button(
+                              fontSizeText: 12,
+                              radius: 10,
+                              width: 18,
+                              height: 30,
+                              backround: mainColor,
+                              text: "add exam",
+                              function: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddExamsScreen(
+                                              id: id,
+                                            )));
+                              })
+                          : elevate_button(
+                              fontSizeText: 12,
+                              radius: 10,
+                              width: 18,
+                              height: 30,
+                              backround: ff5C3A81,
+                              text: "add exam",
+                              function: () {})
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

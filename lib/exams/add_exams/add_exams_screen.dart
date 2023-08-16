@@ -38,8 +38,8 @@ class Answer {
 List<Question> questions = [];
 
 class AddExamsScreen extends StatefulWidget {
-   int id;
-   AddExamsScreen({
+  int id;
+  AddExamsScreen({
     Key? key,
     required this.id,
   }) : super(key: key);
@@ -68,18 +68,18 @@ class _AddExamsScreenState extends State<AddExamsScreen> {
   bool ans2 = false;
   bool ans3 = false;
 
-
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AddExamCubit(),
       child: BlocConsumer<AddExamCubit, AddExamState>(
         listener: (context, state) {
-          if(state is AddExamSuccessState)
-            print(state.responseAddExamModel.message);
-          else if(state
-           is AddExamErrorState)print(state.error);
+           if(state is AddExamSuccessState){
+             questions=[];
+           }
+          //  print(state.responseAddExamModel.message);
+          // else if(state
+          // is AddExamErrorState)print(state.error);
           // TODO: implement listener
         },
         builder: (context, state) {
@@ -268,6 +268,9 @@ class _AddExamsScreenState extends State<AddExamsScreen> {
                                               choise3: answer3.text,
                                               correctChoise: correct!);
                                       exam.add(questionModel);
+                                      ans1=false;
+                                      ans2=false;
+                                      ans3=false;
                                       question.clear();
                                       answer1.clear();
                                       answer2.clear();
@@ -295,8 +298,10 @@ class _AddExamsScreenState extends State<AddExamsScreen> {
                                     backround: mainColor,
                                     text: 'Done',
                                     function: () {
-                                      ExamModel exams = ExamModel(questions:exam);
-                                      List<Map<String, dynamic>> jsonData = exams.toJson();
+                                      ExamModel exams =
+                                          ExamModel(questions: exam);
+                                      final List<Map<String, dynamic>> jsonData =
+                                          exams.toJson();
                                       print(jsonData);
                                       AddExamCubit.get(context)
                                           .Addexam(id, jsonData);

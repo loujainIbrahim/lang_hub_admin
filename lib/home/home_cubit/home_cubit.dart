@@ -14,7 +14,8 @@ import '../../exams/add_exams/add_exams_screen.dart';
 import '../../exams/display_exams/display_exams_screen.dart';
 import '../../feedback/feedback_screen.dart';
 import '../../joining_requests/joining_requests_screen.dart';
-import '../../languages_and_offers/languages_and_offers_screen.dart';
+import '../../languages_and_course/languages_and_courses_screen.dart';
+import '../../show_offers/show_offers_screen.dart';
 import '../../teachers/teachers_screen.dart';
 
 part 'home_state.dart';
@@ -28,20 +29,20 @@ class HomeCubit extends Cubit<HomeState> {
   List<Widget> SideBarScreens = [
     StudnetScreen(),
     TeachersScreen(),
-    LanguagesAndOffersScreen(),
+    LanguagesAndCoursesScreen(),
     CoursesActivationScreen(),
     JoiningRequestsScreen(),
-    DsiplayExamsScreen(),
+    ShowOffersScreen(),
     FeedBackScreen(),
     UpdateTimeTheWaitScreen(),
   ];
   List<String> pageTitles = [
     'Students',
     'Teachers',
-    'Languages and offers',
+    'Languages and courses',
     'courses activation',
     'joining requests',
-    'exams',
+    'Offers',
     'Feedback',
     'Update time the wait',
   ];

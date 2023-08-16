@@ -8,8 +8,8 @@ class AddExamInitial extends AddExamState {}
 class AddExamLoadingState extends AddExamState {}
 
 class AddExamSuccessState extends AddExamState {
-  final ResponseAddExamModel responseAddExamModel;
-  AddExamSuccessState(this.responseAddExamModel);
+
+  AddExamSuccessState();
 }
 
 class AddExamErrorState extends AddExamState {
