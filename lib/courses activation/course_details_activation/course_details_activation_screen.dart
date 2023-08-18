@@ -11,7 +11,8 @@ import '../../core/widgets/field_item_choose.dart';
 import '../../core/widgets/text_field.dart';
 
 class CourseDetailsActivation extends StatefulWidget {
-  const CourseDetailsActivation({Key? key}) : super(key: key);
+  final int id;
+  const CourseDetailsActivation({Key? key,required this.id}) : super(key: key);
 
   @override
   State<CourseDetailsActivation> createState() =>
@@ -26,6 +27,9 @@ class _CourseDetailsActivationState extends State<CourseDetailsActivation> {
     'Germany',
   ];
   List<String> days = ["Sat", "Sun", "Mon", "Tue", "Wen", "Thu", "Fri"];
+  final List<String> dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
+  String? selectedDropdownItem;
+
   TextEditingController timeinput = TextEditingController();
   String? _selectedItem = 'English';
   TextEditingController numberOfSets = TextEditingController();
@@ -78,11 +82,13 @@ class _CourseDetailsActivationState extends State<CourseDetailsActivation> {
                             color: mainColor,
                           ),
                         ),
-                        DropListItem(
-                          item: _selectedItem,
-                          s: _items,
-                          h: 65,
-                          w: 549,
+                        DropdownButtonWidget(
+                          items: dropdownItems,
+                          selectedItem: selectedDropdownItem,
+                          onChanged: (String? selectedItem) {
+                            selectedDropdownItem = selectedItem;
+                            print('Selected item: $selectedItem');
+                          },
                         ),
                         Text(
                           "number of sets:",
@@ -128,11 +134,13 @@ class _CourseDetailsActivationState extends State<CourseDetailsActivation> {
                             color: mainColor,
                           ),
                         ),
-                        DropListItem(
-                          item: _selectedItem,
-                          s: _items,
-                          h: 65,
-                          w: 549,
+                        DropdownButtonWidget(
+                          items: dropdownItems,
+                          selectedItem: selectedDropdownItem,
+                          onChanged: (String? selectedItem) {
+                            selectedDropdownItem = selectedItem;
+                            print('Selected item: $selectedItem');
+                          },
                         ),
                       ]),
                 ),
@@ -159,11 +167,13 @@ class _CourseDetailsActivationState extends State<CourseDetailsActivation> {
                           ),
                         ),
                       ),
-                      DropListItem(
-                        item: _selectedItem,
-                        s: _items,
-                        h: 65,
-                        w: 549,
+                      DropdownButtonWidget(
+                        items: dropdownItems,
+                        selectedItem: selectedDropdownItem,
+                        onChanged: (String? selectedItem) {
+                          selectedDropdownItem = selectedItem;
+                          print('Selected item: $selectedItem');
+                        },
                       ),
                     ],
                   ),

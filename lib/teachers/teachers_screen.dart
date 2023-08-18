@@ -76,16 +76,23 @@ class TeachersScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30.0),
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              //mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Container(
                                   // width: ScreenUtil().setWidth(245),
                                   // height: ScreenUtil().setHeight(172),
-                                  child: Image.memory(
-                                    base64Decode(HomeCubit.get(context)
-                                        .teachersModel!
-                                        .data![index]
-                                        .photo!),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    child: Image.network(
+                                            HomeCubit.get(context)
+                                                .teachersModel!
+                                                .data![index]
+                                                .photo!
+                                                .replaceAll(" ",
+                                                    "%20"), // Replace the space character with %20
+                                            fit: BoxFit.cover,
+                                          )
+                                       ,
                                   ),
                                 ),
                                 SizedBox(
@@ -96,7 +103,15 @@ class TeachersScreen extends StatelessWidget {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      "${HomeCubit.get(context).teachersModel!.data![index].firstName!} ${HomeCubit.get(context).teachersModel!.data![index].lastName!}",
+                                      "${HomeCubit.get(context).teachersModel!.data![index].firstName!}",
+                                      style: TextStyle(
+                                        fontSize: ScreenUtil()
+                                            .setSp(29), // smaller font size
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${HomeCubit.get(context).teachersModel!.data![index].lastName!}",
                                       style: TextStyle(
                                         fontSize: ScreenUtil()
                                             .setSp(29), // smaller font size
@@ -110,7 +125,7 @@ class TeachersScreen extends StatelessWidget {
                                           .phoneNumber!,
                                       style: TextStyle(
                                         fontSize: ScreenUtil()
-                                            .setSp(20), // smaller font size
+                                            .setSp(25), // smaller font size
                                         color: Colors.black,
                                       ),
                                     ),

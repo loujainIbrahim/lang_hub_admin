@@ -15,3 +15,9 @@ class TeacherErrorState extends HomeState {
   final String error;
   TeacherErrorState(this.error);
 }
+class AddStudentLoadingState extends HomeState {}
+class AddStudentSuccessState extends HomeState {}
+class AddStudentErrorState extends HomeState {
+  final String error;
+  AddStudentErrorState(this.error);
+}

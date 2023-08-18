@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +14,9 @@ class ActivateCourseCubit extends Cubit<ActivateCourseState> {
   ActivateCourseCubit() : super(ActivateCourseInitial());
   static ActivateCourseCubit get(context) => BlocProvider.of(context);
   void ActiveCoursePost(
+      int id,
+      String lang,
+      String name,
       int sets,
       DateTime startDate,
       DateTime endDate,
@@ -39,7 +44,9 @@ class ActivateCourseCubit extends Cubit<ActivateCourseState> {
       String fri2) {
     emit(ActivateCourseLoadingState());
     String thursValue = thurs != null ? thurs.toString() : "-";
-    DioHelper.postData(url: "academy-admin/courses/18/active", data: {
+    var body = json.encode({
+      "language":lang,
+      "name":name,
       "seats": sets,
       "start_date": DateFormat('yyyy-MM-dd').format(startDate),
       "end_date": DateFormat('yyyy-MM-dd').format(endDate),
@@ -66,9 +73,13 @@ class ActivateCourseCubit extends Cubit<ActivateCourseState> {
       "friday": fri,
       "start_friday": fri1,
       "end_friday": fri2
-    }).then((value) {
+    });
+    DioHelper.postData(url: "academy-admin/courses/$id/active", data: body)
+        .then((value) {
       emit(ActivateCourseSuccessState());
       print("success");
+     // print(json.encode(value.data));
+      print(value.data);
       // List<int> response=value.data;
       // String responseString = String.fromCharCodes(response);
       // print(responseString);

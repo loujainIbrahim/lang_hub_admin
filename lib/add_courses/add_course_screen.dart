@@ -33,6 +33,11 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     'French',
     'Germany',
   ];
+  final List<String> dropdownItems = [ 'English',
+    'Spanish',
+    'French',
+    'Germany',];
+  String? selectedDropdownItem;
   String _base64Image = '';
   String _selectedItem = 'English';
   @override
@@ -209,11 +214,13 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                                 color: mainColor,
                               ),
                             ),
-                            DropListItem(
-                              item: _selectedItem,
-                              s: _items,
-                              h: 65,
-                              w: 549,
+                            DropdownButtonWidget(
+                              items: dropdownItems,
+                              selectedItem: selectedDropdownItem,
+                              onChanged: (String? selectedItem) {
+                                selectedDropdownItem = selectedItem;
+                                print('Selected item: $selectedItem');
+                              },
                             ),
                           ],
                         ),
@@ -236,14 +243,14 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                           print(nameCourse.text);
                           print(description.text);
                           print(num);
-                          print(_selectedItem);
+                          print(selectedDropdownItem);
                           print(_pickedFile);
-                          print(_imageData);
+                         // print(_imageData);
                           AddCourseCubit.get(context).AddCourse(
                             name: nameCourse.text,
                             description: description.text,
                             hours: num,
-                            language: _selectedItem,
+                            language: selectedDropdownItem!,
                             course_image: _pickedFile!,
                             pickedFile: _pickedFile!,
                             imageData: _imageData,

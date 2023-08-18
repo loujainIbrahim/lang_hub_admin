@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
          //HomeCubit يعني كأنو عم ساوي اوبجيكت من ال..
       ),
       BlocProvider(create: (context)=>ActiveCourseCubit()..getActiveCourses("english")),
-      BlocProvider(create: (context)=>LanguagesAndCoursesCubit()..GetLanguageAndCourses("english"))
+
 
     ], child: ScreenUtilInit(
       designSize: Size(1920, 1080),

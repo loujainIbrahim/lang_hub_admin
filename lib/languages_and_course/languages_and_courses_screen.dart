@@ -29,129 +29,136 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LanguagesAndCoursesCubit, LanguagesAndCoursesState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
-      builder: (context, state) {
-        return Scaffold(
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: mainColor,
-            // isExtended: true,
-            //clipBehavior: Clip.antiAliasWithSaveLayer,
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddCourseScreen()));
-            },
-            child: Icon(
-              Icons.add_circle_outline,
-              size: 40,
-            ),
-            // add some space between the icon and the text
-          ),
-          body: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    elevate_button(
-                        width: 238,
-                        height: 54,
-                        backround: english ? mainColor : ff5C3A81,
-                        text: "English",
-                        function: () {
-                          setState(() {
-                            english = true;
-                            french = false;
-                            germeny = false;
-                            spanish = false;
-                          });
-                          LanguagesAndCoursesCubit.get(context)
-                              .GetLanguageAndCourses("english");
-                        }),
-                    elevate_button(
-                        backround: spanish ? mainColor : ff5C3A81,
-                        text: "Spanish",
-                        function: () {
-                          setState(() {
-                            english = false;
-                            french = false;
-                            germeny = false;
-                            spanish = true;
-                          });
-                          print(english);
-                          print(french);
-                          print(spanish);
-                          LanguagesAndCoursesCubit.get(context)
-                              .GetLanguageAndCourses("spanish");
-                        }),
-                    elevate_button(
-                        backround: germeny! ? mainColor : ff5C3A81,
-                        text: "germany",
-                        function: () {
-                          setState(() {
-                            english = false;
-                            french = false;
-                            germeny = true;
-                            spanish = false;
-                          });
-                          LanguagesAndCoursesCubit.get(context)
-                              .GetLanguageAndCourses("germany");
-                        }),
-                    elevate_button(
-                        backround: french! ? mainColor : ff5C3A81,
-                        text: "french",
-                        function: () {
-                          setState(() {
-                            english = false;
-                            french = true;
-                            germeny = false;
-                            spanish = false;
-                          });
-                          LanguagesAndCoursesCubit.get(context)
-                              .GetLanguageAndCourses("french");
-                        }),
-                  ],
-                ),
+    return BlocProvider(
+      create: (context) =>
+          LanguagesAndCoursesCubit()..GetLanguageAndCourses("english"),
+      child: BlocConsumer<LanguagesAndCoursesCubit, LanguagesAndCoursesState>(
+        listener: (context, state) {
+          // TODO: implement listener
+        },
+        builder: (context, state) {
+          return Scaffold(
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: mainColor,
+              // isExtended: true,
+              //clipBehavior: Clip.antiAliasWithSaveLayer,
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddCourseScreen()));
+              },
+              child: Icon(
+                Icons.add_circle_outline,
+                size: 40,
               ),
-              ConditionalBuilder(
-                  condition: state is! LanguagesAndCoursesLoadingState,
-                  fallback: (context) =>
-                      Center(child: CircularProgressIndicator()),
-                  builder: (context) {
-                    final LangCoursemodel =
-                        LanguagesAndCoursesCubit.get(context)
-                            .languageCourseModel;
-                    return Expanded(
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4, // number of columns
-                          crossAxisSpacing: 10.0, // spacing between columns
-                          mainAxisSpacing: 10.0, // spacing between rows
+              // add some space between the icon and the text
+            ),
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      elevate_button(
+                          width: 238,
+                          height: 54,
+                          backround: english ? mainColor : ff5C3A81,
+                          text: "English",
+                          function: () {
+                            setState(() {
+                              english = true;
+                              french = false;
+                              germeny = false;
+                              spanish = false;
+                            });
+                            LanguagesAndCoursesCubit.get(context)
+                                .GetLanguageAndCourses("english");
+                          }),
+                      elevate_button(
+                          backround: spanish ? mainColor : ff5C3A81,
+                          text: "Spanish",
+                          function: () {
+                            setState(() {
+                              english = false;
+                              french = false;
+                              germeny = false;
+                              spanish = true;
+                            });
+                            print(english);
+                            print(french);
+                            print(spanish);
+                            LanguagesAndCoursesCubit.get(context)
+                                .GetLanguageAndCourses("spanish");
+                          }),
+                      elevate_button(
+                          backround: germeny! ? mainColor : ff5C3A81,
+                          text: "germany",
+                          function: () {
+                            setState(() {
+                              english = false;
+                              french = false;
+                              germeny = true;
+                              spanish = false;
+                            });
+                            LanguagesAndCoursesCubit.get(context)
+                                .GetLanguageAndCourses("germany");
+                          }),
+                      elevate_button(
+                          backround: french! ? mainColor : ff5C3A81,
+                          text: "french",
+                          function: () {
+                            setState(() {
+                              english = false;
+                              french = true;
+                              germeny = false;
+                              spanish = false;
+                            });
+                            LanguagesAndCoursesCubit.get(context)
+                                .GetLanguageAndCourses("french");
+                          }),
+                    ],
+                  ),
+                ),
+                ConditionalBuilder(
+                    condition: state is! LanguagesAndCoursesLoadingState,
+                    fallback: (context) =>
+                        Center(child: CircularProgressIndicator()),
+                    builder: (context) {
+                      final LangCoursemodel =
+                          LanguagesAndCoursesCubit.get(context)
+                              .languageCourseModel;
+                      return Expanded(
+                        child: GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4, // number of columns
+                            crossAxisSpacing: 10.0, // spacing between columns
+                            mainAxisSpacing: 10.0, // spacing between rows
+                          ),
+                          itemCount:
+                              LangCoursemodel!.data!.length, // number of items
+                          itemBuilder: (BuildContext context, int index) {
+                            return BuildItemListView(
+                                context,
+                                LangCoursemodel!.data![index].courseImage!,
+                                LangCoursemodel!.data![index].name!,
+                                LangCoursemodel!.data![index].hours.toString(),
+                            LangCoursemodel!.data![index].id!
+                            );
+                          },
                         ),
-                        itemCount:
-                            LangCoursemodel!.data!.length, // number of items
-                        itemBuilder: (BuildContext context, int index) {
-                          return BuildItemListView(
-                              context,
-                              LangCoursemodel!.data![index].courseImage!,
-                              LangCoursemodel!.data![index].name!,
-                              LangCoursemodel!.data![index].hours.toString());
-                        },
-                      ),
-                    );
-                  })
-            ],
-          ),
-        );
-      },
+                      );
+                    })
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
   Widget BuildItemListView(
-      BuildContext context, String image, String name, String hours) {
+      BuildContext context, String image, String name, String hours,int id) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Container(
@@ -245,7 +252,7 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          ActivateCourseScreen()));
+                                          ActivateCourseScreen(id: id,)));
                             })
                       ],
                     ),

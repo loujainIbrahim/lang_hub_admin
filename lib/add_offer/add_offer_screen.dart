@@ -33,6 +33,8 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
   ];
   List<String> days = ["Sat", "Sun", "Mon", "Tue", "Wen", "Thu", "Fri"];
   String _selectedItem = 'English';
+  final List<String> dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
+  String? selectedDropdownItem;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -184,11 +186,13 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
                     ),
                   ),
                 ),
-                DropListItem(
-                  item: _selectedItem,
-                  s: _items,
-                  h: 65,
-                  w: 549,
+                DropdownButtonWidget(
+                  items: dropdownItems,
+                  selectedItem: selectedDropdownItem,
+                  onChanged: (String? selectedItem) {
+                    selectedDropdownItem = selectedItem;
+                    print('Selected item: $selectedItem');
+                  },
                 ),
               ])
             ],

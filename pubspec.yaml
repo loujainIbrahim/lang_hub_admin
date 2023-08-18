@@ -48,6 +48,7 @@ dependencies:
   http:
   shared_preferences:
   dio:
+  flutter_material_pickers:
   conditional_builder_null_safety:
 dev_dependencies:
   flutter_test:

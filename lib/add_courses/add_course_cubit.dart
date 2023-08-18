@@ -38,10 +38,10 @@ class AddCourseCubit extends Cubit<AddCourseState> {
    ///////////
 
     final response =
-        DioHelper.postData(url: "/academy-admin/courses", data:formData )
+        DioHelper.postData(url: "academy-admin/courses", data:formData )
             .then((value) {
-              final course=AddCourseModel.fromJson(json.decode(value.data));
-              print(value.data);
+              //final course=AddCourseModel.fromJson(json.decode(value.data));
+              print(json.encode(value.data));
       emit(AddCourseSuccess());
       print("succcessssss");
     }).catchError((onError) {

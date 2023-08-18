@@ -167,7 +167,7 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CourseDetailsScreen()));
+            MaterialPageRoute(builder: (context) => CourseDetailsScreen(id:id)));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -200,10 +200,9 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(30),
                         topLeft: Radius.circular(30)),
-                    child: (image == "")
+                    child: (image == "" || image == null)
                         ? Container(
-                      color: Colors.blue,
-
+                            color: Colors.blue,
                           )
                         : Image.network(
                             image!,
@@ -264,7 +263,9 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
                           color: mainColor,
                         ),
                       ),
-                      SizedBox(width: 2,),
+                      SizedBox(
+                        width: 2,
+                      ),
                       (hasExam == 0)
                           ? elevate_button(
                               fontSizeText: 12,

@@ -2,7 +2,7 @@ import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import "package:lang_hub_admin/joining_requests_from_teachers/requests_teachers_model.dart";
 import '../../core/color.dart';
 import '../../core/widgets/field_item_choose.dart';
 import '../../core/widgets/days_times_widget.dart';
@@ -26,7 +26,7 @@ List<String> time_strings = [
   "gjgj",
   "ytytr"
 ];
-void showRequestTeachersDetailsDialog(BuildContext context) {
+void showRequestTeachersDetailsDialog(BuildContext context, Data data) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -43,9 +43,15 @@ void showRequestTeachersDetailsDialog(BuildContext context) {
                       Container(
                         width: ScreenUtil().setWidth(371),
                         height: ScreenUtil().setHeight(304),
-                        child: Image.asset(
-                          "assets/images/ll.png",
-                          fit: BoxFit.cover,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30.0),
+                          child: (data.photo == "" || data.photo == null)
+                              ? Image.network(
+                                  data.photo!.replaceAll(" ",
+                                      "%20"), // Replace the space character with %20
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(),
                         ),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20)),
@@ -61,19 +67,19 @@ void showRequestTeachersDetailsDialog(BuildContext context) {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              "name is: " + "loujain ibrahim",
+                              "name is: " + data.firstName!,
                               style: TextStyle(
                                   fontSize: ScreenUtil().setSp(25),
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              "email: " + "loooo@gmail.com",
+                              "email: " + data.lastName!,
                               style: TextStyle(
                                   fontSize: ScreenUtil().setSp(25),
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              "09948367",
+                              data.phoneNumber!,
                               style: TextStyle(
                                   fontSize: ScreenUtil().setSp(25),
                                   fontWeight: FontWeight.bold),
@@ -91,9 +97,9 @@ void showRequestTeachersDetailsDialog(BuildContext context) {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-
                                   Padding(
                                     padding: const EdgeInsets.only(left: 50.0),
                                     child: Text("from:"),
@@ -102,23 +108,42 @@ void showRequestTeachersDetailsDialog(BuildContext context) {
                                 ],
                               ),
                               Expanded(
-
-                                child: ListView(
-                                    children: [
-                                      DaysTimesWidget(
-                                      "Saterday", true, "4:00", "6:00"),
-                                      DaysTimesWidget(
-                                      "Sunday", true, "4:00", "6:00"),
-                                      DaysTimesWidget(
-                                      "Monday", true, "4:00", "6:00"),
-                                      DaysTimesWidget(
-                                      "Tuesday", true, "4:00", "6:00"),
-                                      DaysTimesWidget(
-                                      "Wednesday", true, "4:00", "6:00"),
-                                      DaysTimesWidget(
-                                      "Thursday", true, "4:00", "6:00"),
-                                      DaysTimesWidget(
-                                      "Friday", true, "4:00", "6:00"),
+                                child: ListView(children: [
+                                  DaysTimesWidget(
+                                      "Saterday",
+                                      (data.time!.saturday == 1) ? true : false,
+                                      data.time!.startSaturday!,
+                                      data.time!.endSaturday!),
+                                  DaysTimesWidget(
+                                      "Sunday",
+                                      (data.time!.sunday == 1) ? true : false,
+                                      data.time!.startSunday!,
+                                      data.time!.endSunday!),
+                                  DaysTimesWidget(
+                                      "Monday",
+                                      (data.time!.monday == 1) ? true : false,
+                                      data.time!.startMonday!,
+                                      data.time!.startMonday!),
+                                  DaysTimesWidget(
+                                      "Tuesday",
+                                      (data.time!.tuesday == 1) ? true : false,
+                                      data.time!.startTuesday!,
+                                      data.time!.startTuesday!),
+                                  DaysTimesWidget(
+                                      "Wednesday",
+                                      (data.time!.wednsday == 1) ? true : false,
+                                      data.time!.startWednsday!,
+                                      data.time!.startWednsday!),
+                                  DaysTimesWidget(
+                                      "Thursday",
+                                      (data.time!.thursday == 1) ? true : false,
+                                      data.time!.startThursday!,
+                                      data.time!.startThursday!),
+                                  DaysTimesWidget(
+                                      "Friday",
+                                      (data.time!.friday == 1) ? true : false,
+                                      data.time!.startFriday!,
+                                      data.time!.startFriday!),
                                 ]),
                               )
                             ],
@@ -163,23 +188,30 @@ void showRequestTeachersDetailsDialog(BuildContext context) {
                                       padding: EdgeInsets.only(top: 10),
                                       alignment: Alignment.topLeft,
                                       width: ScreenUtil().setWidth(371),
-                                      child: Text("ddddd")),
+                                      child: Text(data.posts![index].title!)),
                                   Divider(),
                                   Container(
                                     width: ScreenUtil().setWidth(371),
                                     height: ScreenUtil().setHeight(244),
-                                    child: Image.asset(
-                                      "assets/images/ll.png",
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                    ),
                                     decoration: BoxDecoration(),
                                     clipBehavior: Clip.antiAlias,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      child: (data.posts![index].image == "" ||
+                                              data.posts![index].image == null)
+                                          ? Image.network(
+                                              data.posts![index].image!.replaceAll(
+                                                  " ",
+                                                  "%20"), // Replace the space character with %20
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Container(),
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                        itemCount: 2,
+                        itemCount: data.posts!.length,
                         separatorBuilder: (BuildContext context, int index) {
                           return SizedBox(
                             height: 20,

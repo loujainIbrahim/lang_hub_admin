@@ -58,6 +58,8 @@ class _AddExamsScreenState extends State<AddExamsScreen> {
     'Germany',
   ];
   int? correct;
+  final List<String> dropdownItems = ['Option 1', 'Option 2', 'Option 3'];
+  String? selectedDropdownItem;
   List<QuestionModel> exam = [];
   String _selectedItem = 'English';
   TextEditingController question = new TextEditingController();
@@ -118,45 +120,49 @@ class _AddExamsScreenState extends State<AddExamsScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "choose your teacher:",
-                                style: TextStyle(
-                                  fontSize: ScreenUtil()
-                                      .setSp(25), // smaller font size
-                                  color: mainColor,
-                                ),
-                              ),
-                            ),
-                            DropListItem(
-                              item: _selectedItem,
-                              s: _items,
-                              h: 65,
-                              w: 549,
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(8.0),
+                            //   child: Text(
+                            //     "choose your teacher:",
+                            //     style: TextStyle(
+                            //       fontSize: ScreenUtil()
+                            //           .setSp(25), // smaller font size
+                            //       color: mainColor,
+                            //     ),
+                            //   ),
+                            // ),
+                            // DropdownButtonWidget(
+                            //   items: dropdownItems,
+                            //   selectedItem: selectedDropdownItem,
+                            //   onChanged: (String? selectedItem) {
+                            //     selectedDropdownItem = selectedItem;
+                            //     print('Selected item: $selectedItem');
+                            //   },
+                            // ),
                           ],
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "choose level",
-                                style: TextStyle(
-                                  fontSize: ScreenUtil()
-                                      .setSp(25), // smaller font size
-                                  color: mainColor,
-                                ),
-                              ),
-                            ),
-                            DropListItem(
-                              item: _selectedItem,
-                              s: _items,
-                              h: 65,
-                              w: 549,
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.all(8.0),
+                            //   child: Text(
+                            //     "choose level",
+                            //     style: TextStyle(
+                            //       fontSize: ScreenUtil()
+                            //           .setSp(25), // smaller font size
+                            //       color: mainColor,
+                            //     ),
+                            //   ),
+                            // ),
+                            // DropdownButtonWidget(
+                            //   items: dropdownItems,
+                            //   selectedItem: selectedDropdownItem,
+                            //   onChanged: (String? selectedItem) {
+                            //     selectedDropdownItem = selectedItem;
+                            //     print('Selected item: $selectedItem');
+                            //   },
+                            // ),
                           ],
                         )
                       ],

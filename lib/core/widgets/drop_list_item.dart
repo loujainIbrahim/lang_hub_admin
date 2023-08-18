@@ -1,50 +1,49 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../color.dart';
+class DropdownButtonWidget extends StatefulWidget {
+  final List<String> items;
+  final String? selectedItem;
+  final ValueChanged<String?>? onChanged;
+  double? w;
+  double? h;
 
-class DropListItem extends StatefulWidget {
-   DropListItem({Key? key,required this.item,required this.s, this.w=449, this.h=55}) : super(key: key);
-  List<String> s;
- String? item;
-int h= 55;
-int w=449;
+  DropdownButtonWidget(
+      {required this.items, this.selectedItem, this.onChanged, this.w, this.h});
+
   @override
-  State<DropListItem> createState() => _DropListItemState();
+  _DropdownButtonWidgetState createState() => _DropdownButtonWidgetState();
 }
 
-class _DropListItemState extends State<DropListItem> {
+class _DropdownButtonWidgetState extends State<DropdownButtonWidget> {
+  String? _selectedItem;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedItem = widget.selectedItem;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: ScreenUtil().setWidth(widget.w),
-      height: ScreenUtil().setHeight(widget.h),
-      child: Material(
-        color: fillColorInTextFormField,
-        borderRadius: BorderRadius.circular(5.0),
-        elevation: 2.0,
-        child: DropdownButton<String>(
-          alignment: Alignment.center,
-          iconEnabledColor: mainColor,
-          isExpanded: true,
-          value: widget.item,
-          underline: Container(
-            color: Colors.transparent,
-          ),
-          items: widget.s.map((String value) {
-            return DropdownMenuItem<String>(
-              alignment: Alignment.center,
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          onChanged: (selectedItem) {
-            setState(() {
-              widget.item = selectedItem;
-            });
-          },
-        ),
+      width: widget.w,
+      height: widget.h,
+      child: DropdownButton<String>(
+        value: _selectedItem,
+        items: widget.items.map((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+        onChanged: (String? selectedItem) {
+          setState(() {
+            _selectedItem = selectedItem;
+          });
+          if (widget.onChanged != null) {
+            widget.onChanged!(selectedItem);
+          }
+        },
       ),
     );
   }
