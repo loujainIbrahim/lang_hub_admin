@@ -9,8 +9,29 @@ import 'package:lang_hub_admin/show_offers/offer_model.dart';
 
 import '../core/color.dart';
 
-class ShowOffersScreen extends StatelessWidget {
+class ShowOffersScreen extends StatefulWidget {
   const ShowOffersScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ShowOffersScreen> createState() => _ShowOffersScreenState();
+}
+
+class _ShowOffersScreenState extends State<ShowOffersScreen> {
+  late OfferCubit offerCubit;
+  OfferModel? offerModel;
+  @override
+  void initState() {
+    super.initState();
+    offerCubit = OfferCubit();
+    offerCubit!.getOffers();
+  }
+
+  @override
+  void dispose() {
+    offerCubit!
+        .close(); // Close the RequestsTeachersCubit when the widget is disposed
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,41 +51,48 @@ class ShowOffersScreen extends StatelessWidget {
         // add some space between the icon and the text
       ),
       body: BlocProvider(
-        create: (context) => OfferCubit()..getOffers(),
+        create: (context) => offerCubit,
         child: BlocConsumer<OfferCubit, OfferState>(
           listener: (context, state) {
             // TODO: implement listener
           },
           builder: (context, state) {
-            return Column(
-              children: [
-                Expanded(
-                  child: ConditionalBuilder(
-                      condition: state is! OfferLoadingState,
-                      fallback: (context) => Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                      builder: (context) {
-                        final modelOffer = OfferCubit.get(context).offerModel;
-                        return GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4, // number of columns
-                            crossAxisSpacing: 10.0, // spacing between columns
-                            mainAxisSpacing: 10.0, // spacing between rows
-                          ),
-                          itemCount:
-                          modelOffer?.data?.length, // number of items
-                          itemBuilder: (BuildContext context, int index) {
-                            final data = modelOffer?.data?[index];
-                            return BuildItemListView(
-                                context,data!);
-                          },
-                        );
-                      }),
-                )
-              ],
-            );
+            if (state is OfferLoadingState) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is OfferSuccessState) {
+              offerModel = state.offerModel;
+              return Column(
+                children: [
+                  Expanded(
+                    child: ConditionalBuilder(
+                        condition: state is! OfferLoadingState,
+                        fallback: (context) => Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                        builder: (context) {
+                          // final modelOffer = OfferCubit.get(context).offerModel;
+                          return GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4, // number of columns
+                              crossAxisSpacing: 10.0, // spacing between columns
+                              mainAxisSpacing: 10.0, // spacing between rows
+                            ),
+                            itemCount:
+                                offerModel?.data?.length, // number of items
+                            itemBuilder: (BuildContext context, int index) {
+                              final data = offerModel?.data?[index];
+                              return BuildItemListView(context, data!);
+                            },
+                          );
+                        }),
+                  )
+                ],
+              );
+            }
+            return Container();
           },
         ),
       ),
@@ -72,8 +100,7 @@ class ShowOffersScreen extends StatelessWidget {
   }
 }
 
-Widget BuildItemListView(
-    BuildContext context,Data data) {
+Widget BuildItemListView(BuildContext context, Data data) {
   return Padding(
     padding: const EdgeInsets.all(10.0),
     child: Container(
@@ -112,8 +139,7 @@ Widget BuildItemListView(
                     : Image.network(
                         data.image!,
                         fit: BoxFit.cover,
-                      )
-                    ),
+                      )),
           ),
           Container(
             width: ScreenUtil().setWidth(281),

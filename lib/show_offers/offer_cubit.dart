@@ -15,7 +15,7 @@ class OfferCubit extends Cubit<OfferState> {
     DioHelper.getData(url: "/academy-admin/offers").then((value) {
       if (value.data != null) {
         offerModel = OfferModel.fromJson(value.data!);
-        emit(OfferSuccessState());
+        emit(OfferSuccessState(offerModel!));
         // Rest of your code
       } else {
         // Handle the case when value.data is null

@@ -305,7 +305,7 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                             h: 85,
                                             controller: Sat1,
                                             ontap: () {
-                                              _selectTime(context,Sat1);
+                                              _selectTime(context, Sat1);
                                               print(selectedTime);
                                             }),
                                         ItemField(
@@ -313,7 +313,7 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                             h: 85,
                                             controller: Sat2,
                                             ontap: () {
-                                              _selectTime(context,Sat2);
+                                              _selectTime(context, Sat2);
                                             }),
                                       ],
                                     ),
@@ -356,14 +356,14 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                             h: 85,
                                             controller: Sun1,
                                             ontap: () {
-                                              _selectTime(context,Sun1);
+                                              _selectTime(context, Sun1);
                                             }),
                                         ItemField(
                                             w: 150,
                                             h: 85,
                                             controller: Sun2,
                                             ontap: () {
-                                              _selectTime(context,Sun2);
+                                              _selectTime(context, Sun2);
                                             }),
                                       ],
                                     ),
@@ -406,14 +406,14 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                             h: 85,
                                             controller: Mon1,
                                             ontap: () {
-                                              _selectTime(context,Mon1);
+                                              _selectTime(context, Mon1);
                                             }),
                                         ItemField(
                                             w: 150,
                                             h: 85,
                                             controller: Mon2,
                                             ontap: () {
-                                              _selectTime(context,Mon2);
+                                              _selectTime(context, Mon2);
                                             }),
                                       ],
                                     ),
@@ -456,14 +456,14 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                             h: 85,
                                             controller: Tue1,
                                             ontap: () {
-                                              _selectTime(context,Tue1);
+                                              _selectTime(context, Tue1);
                                             }),
                                         ItemField(
                                             w: 150,
                                             h: 85,
                                             controller: Tue2,
                                             ontap: () {
-                                              _selectTime(context,Tue2);
+                                              _selectTime(context, Tue2);
                                             }),
                                       ],
                                     ),
@@ -506,14 +506,14 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                             h: 85,
                                             controller: Wen1,
                                             ontap: () {
-                                              _selectTime(context,Wen1);
+                                              _selectTime(context, Wen1);
                                             }),
                                         ItemField(
                                             w: 150,
                                             h: 85,
                                             controller: Wen2,
                                             ontap: () {
-                                              _selectTime(context,Wen2);
+                                              _selectTime(context, Wen2);
                                             }),
                                       ],
                                     ),
@@ -556,14 +556,14 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                             h: 85,
                                             controller: Fri1,
                                             ontap: () {
-                                              _selectTime(context,Fri1);
+                                              _selectTime(context, Fri1);
                                             }),
                                         ItemField(
                                             w: 150,
                                             h: 85,
                                             controller: Fri2,
                                             ontap: () {
-                                              _selectTime(context,Fri2);
+                                              _selectTime(context, Fri2);
                                             }),
                                       ],
                                     ),
@@ -606,7 +606,7 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                           h: 85,
                                           controller: Thu1,
                                           ontap: () {
-                                            _selectTime(context,Thu1);
+                                            _selectTime(context, Thu1);
                                           },
                                         ),
                                         ItemField(
@@ -614,7 +614,7 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                                           h: 85,
                                           controller: Thu2,
                                           ontap: () {
-                                            _selectTime(context,Thu2);
+                                            _selectTime(context, Thu2);
                                           },
                                         ),
                                       ],
@@ -727,8 +727,10 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
       ),
     );
   }
+
   DateTime _selectedTime = DateTime.now();
-  void _selectTime(BuildContext context,TextEditingController controller) async {
+  void _selectTime(
+      BuildContext context, TextEditingController controller) async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(_selectedTime),
@@ -781,14 +783,6 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
     }
   }
 
-
-
-
-
-
-
-
-
   // void _selectTime(BuildContext context,TextEditingController controller) async {
   //   final TimeOfDay? pickedTime = await showTimePicker(
   //     context: context,
@@ -822,15 +816,6 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
   //   }
   // }
 
-
-
-
-
-
-
-
-
-
   // TimeOfDay _selectedTime = TimeOfDay.now();
   // TimeOfDay _startTime =
   //     TimeOfDay(hour: 6, minute: 0); // Replace with your desired start time
@@ -852,8 +837,6 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
   //     // Show an error message or feedback to the user
   //   }
   // }
-
-
 
   // bool _isTimeInRange(TimeOfDay time) {
   //   DateTime currentTime = DateTime.now();
