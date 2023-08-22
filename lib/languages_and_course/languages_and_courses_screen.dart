@@ -21,6 +21,8 @@ import '../core/widgets/field_item_choose.dart';
 import '../courses activation/course_details_activation/course_details_activation_screen.dart';
 import '../courses activation/show_exam/show_exam_screen.dart';
 import '../exams/add_exams/add_exams_screen.dart';
+import 'add_course/add_course_cubit.dart';
+import 'add_course/add_course_screen.dart';
 import 'language_and_courses_model.dart';
 
 class LanguagesAndCoursesScreen extends StatefulWidget {

@@ -42,44 +42,44 @@ class LanguagesAndCoursesCubit extends Cubit<LanguagesAndCoursesState> {
   // void refreshCourses() {
   //   emit(LanguagesAndCoursesSuccessState(languageCourseModel));
   // }
-  void AddCourse(
-      {required String name,
-      required String description,
-      required int hours,
-      required String language,
-      required File course_image,
-      required File pickedFile,
-      required Uint8List? imageData}) async {
-    emit(AddCourseLoading());
-    // String hh = hours.toString();
-    final formData = FormData.fromMap({
-      'name': name,
-      'description': description,
-      'hours': hours,
-      'language': language,
-      'course_image':
-          MultipartFile.fromBytes(imageData!, filename: pickedFile.name),
-    });
-    ///////////
-
-    final response =
-        DioHelper.postData(url: "academy-admin/courses", data: formData)
-            .then((value) {
-      //final course=AddCourseModel.fromJson(json.decode(value.data));
-      print(json.encode(value.data));
-      emit(AddCourseSuccess());
-     // refreshCourses();
-      print("succcessssss");
-    }).catchError((onError) {
-      print(formData);
-      print(onError.toString());
-      emit(AddCourseError(onError.toString()));
-    });
-
-    // // final responseData =jsonDecode(response.data);
-    // //final addCourseModel = Data.fromJson(response.data);
-    // print(response.data);
-    // print("add course done");
-    // // print(addCourseModel);
-  }
+  // void AddCourse(
+  //     {required String name,
+  //     required String description,
+  //     required int hours,
+  //     required String language,
+  //     required File course_image,
+  //     required File pickedFile,
+  //     required Uint8List? imageData}) async {
+  //   emit(AddCourseLoading());
+  //   // String hh = hours.toString();
+  //   final formData = FormData.fromMap({
+  //     'name': name,
+  //     'description': description,
+  //     'hours': hours,
+  //     'language': language,
+  //     'course_image':
+  //         MultipartFile.fromBytes(imageData!, filename: pickedFile.name),
+  //   });
+  //   ///////////
+  //
+  //   final response =
+  //       DioHelper.postData(url: "academy-admin/courses", data: formData)
+  //           .then((value) {
+  //     //final course=AddCourseModel.fromJson(json.decode(value.data));
+  //     print(json.encode(value.data));
+  //     emit(AddCourseSuccess());
+  //    // refreshCourses();
+  //     print("succcessssss");
+  //   }).catchError((onError) {
+  //     print(formData);
+  //     print(onError.toString());
+  //     emit(AddCourseError(onError.toString()));
+  //   });
+  //
+  //   // // final responseData =jsonDecode(response.data);
+  //   // //final addCourseModel = Data.fromJson(response.data);
+  //   // print(response.data);
+  //   // print("add course done");
+  //   // // print(addCourseModel);
+  // }
 }

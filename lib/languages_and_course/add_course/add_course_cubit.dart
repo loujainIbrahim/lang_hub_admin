@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lang_hub_admin/core/network/DioHelper.dart';
 import 'package:meta/meta.dart';
 
+import '../languages_and_courses_cubit.dart';
 import 'add_course_model.dart';
 
 part 'add_course_state.dart';
@@ -42,8 +43,9 @@ class AddCourseCubit extends Cubit<AddCourseState> {
         .then((value) {
       //final course=AddCourseModel.fromJson(json.decode(value.data));
       print(json.encode(value.data));
-      emit(AddCourseSuccess());
+      emit(AddCourseSuccess(value.data["message"]));
       print("succcessssss");
+      print(value.data["message"]);
     }).catchError((onError) {
       print(formData);
       print(onError.toString());

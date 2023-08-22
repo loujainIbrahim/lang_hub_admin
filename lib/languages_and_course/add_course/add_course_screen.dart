@@ -12,9 +12,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lang_hub_admin/add_courses/add_course_cubit.dart';
 
 import '../../core/color.dart';
+import '../../core/widgets/alert.dart';
 import '../../core/widgets/drop_list_item.dart';
 import '../../core/widgets/elevate_button.dart';
 import '../../core/widgets/field_item_choose.dart';
+import '../../core/widgets/snake_bar_widget.dart';
 import 'add_course_cubit.dart';
 
 class AddCourseScreen extends StatefulWidget {
@@ -53,7 +55,9 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
           if (state is AddCourseError) {
             print(state.error);
           } else if (state is AddCourseSuccess) {
-            print("is correct");
+             if(state.message=="the selected value for hours invalid")
+               showAlertDialog(context,state.message);
+            else ErrorSnackBar.show(context, state.message);
           }
         },
         builder: (context, state) {
