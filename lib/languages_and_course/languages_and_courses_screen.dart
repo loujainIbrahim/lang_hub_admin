@@ -1,20 +1,30 @@
+import 'dart:async';
+import 'dart:html' as html;
+import 'dart:typed_data';
+
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:lang_hub_admin/languages_and_course/language_and_courses_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lang_hub_admin/add_courses/add_course_cubit.dart';
 import 'package:lang_hub_admin/add_courses/add_course_screen.dart';
 import 'package:lang_hub_admin/home/home_screen.dart';
 import 'package:lang_hub_admin/languages_and_course/languages_and_courses_cubit.dart';
 
 import '../activate_course/activate_course_screen.dart';
 import '../core/color.dart';
+import '../core/widgets/drop_list_item.dart';
 import '../core/widgets/elevate_button.dart';
+import '../core/widgets/field_item_choose.dart';
 import '../courses activation/course_details_activation/course_details_activation_screen.dart';
+import '../courses activation/show_exam/show_exam_screen.dart';
 import '../exams/add_exams/add_exams_screen.dart';
+import 'language_and_courses_model.dart';
 
 class LanguagesAndCoursesScreen extends StatefulWidget {
-  const LanguagesAndCoursesScreen({Key? key}) : super(key: key);
+  LanguagesAndCoursesScreen({Key? key}) : super(key: key);
 
   @override
   State<LanguagesAndCoursesScreen> createState() =>
@@ -26,15 +36,48 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
   bool spanish = false;
   bool germeny = false;
   bool french = false;
-
+  LanguageCourseModel? languageCourseModel;
+  TextEditingController description = TextEditingController();
+  TextEditingController nameCourse = TextEditingController();
+  TextEditingController numberOfHours = TextEditingController();
+  List<String> _items = [
+    'English',
+    'Spanish',
+    'French',
+    'Germany',
+  ];
+  final List<String> dropdownItems = [
+    'English',
+    'Spanish',
+    'French',
+    'Germany',
+  ];
+  String? selectedDropdownItem;
+  String _base64Image = '';
+  String _selectedItem = 'English';
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
+      // BlocProvider(create: (_) => LanguagesAndCoursesCubit()..GetLanguageAndCourses("english")),
+
+      create: (BuildContext context) =>
           LanguagesAndCoursesCubit()..GetLanguageAndCourses("english"),
       child: BlocConsumer<LanguagesAndCoursesCubit, LanguagesAndCoursesState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state is DeleteCoursesSuccessState) {
+            print("this is come from delete");
+            LanguagesAndCoursesCubit.get(context)
+                .GetLanguageAndCourses("english");
+          }
+          if (state is AddCourseSuccess) {
+            print("this is come from adddd");
+            LanguagesAndCoursesCubit.get(context)
+                .GetLanguageAndCourses('english');
+          }
+          if (state is LanguagesAndCoursesSuccessState)
+            languageCourseModel = state.languageCourseModel;
+          print("languageCourseModel = state.languageCourseModel");
+          // TODO: implement listene
         },
         builder: (context, state) {
           return Scaffold(
@@ -124,9 +167,6 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
                     fallback: (context) =>
                         Center(child: CircularProgressIndicator()),
                     builder: (context) {
-                      final LangCoursemodel =
-                          LanguagesAndCoursesCubit.get(context)
-                              .languageCourseModel;
                       return Expanded(
                         child: GridView.builder(
                           gridDelegate:
@@ -135,16 +175,16 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
                             crossAxisSpacing: 10.0, // spacing between columns
                             mainAxisSpacing: 10.0, // spacing between rows
                           ),
-                          itemCount:
-                              LangCoursemodel!.data!.length, // number of items
+                          itemCount: languageCourseModel!
+                              .data!.length, // number of items
                           itemBuilder: (BuildContext context, int index) {
                             return BuildItemListView(
                                 context,
-                                LangCoursemodel!.data![index].courseImage!,
-                                LangCoursemodel!.data![index].name!,
-                                LangCoursemodel!.data![index].hours.toString(),
-                            LangCoursemodel!.data![index].id!
-                            );
+                                languageCourseModel!.data![index].courseImage!,
+                                languageCourseModel!.data![index].name!,
+                                languageCourseModel!.data![index].hours
+                                    .toString(),
+                                languageCourseModel!.data![index].id!);
                           },
                         ),
                       );
@@ -158,11 +198,11 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
   }
 
   Widget BuildItemListView(
-      BuildContext context, String image, String name, String hours,int id) {
+      BuildContext context, String image, String name, String hours, int id) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Container(
-        width: ScreenUtil().setWidth(281),
+        width: ScreenUtil().setWidth(381),
         height: ScreenUtil().setHeight(243),
         decoration: BoxDecoration(
           color: fillColorInTextFormField,
@@ -201,7 +241,7 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
                         )),
             ),
             Container(
-              width: ScreenUtil().setWidth(281),
+              width: ScreenUtil().setWidth(381),
               height: ScreenUtil().setHeight(200),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,13 +250,17 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        name,
-                        style: TextStyle(
-                            fontSize:
-                                ScreenUtil().setSp(25), // smaller font size
-                            color: mainColor,
-                            fontWeight: FontWeight.bold),
+                      Container(
+                        width: 100,
+                        child: Text(
+                          name,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize:
+                                  ScreenUtil().setSp(25), // smaller font size
+                              color: mainColor,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Text(
                         hours + " hours",
@@ -232,7 +276,11 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
                     child: Column(
                       children: [
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              print(id);
+                              LanguagesAndCoursesCubit.get(context)
+                                  .DeleteCourse(id);
+                            },
                             icon: Icon(
                               Icons.delete,
                               color: mainColor,
@@ -243,17 +291,36 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
                         elevate_button(
                             fontSizeText: 14,
                             radius: 25,
-                            width: 25,
+                            width: 30,
                             height: 25,
                             backround: mainColor,
                             text: "activate",
                             function: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ActivateCourseScreen(id: id,)));
-                            })
+                              Future.delayed(Duration.zero, () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            ActivateCourseScreen(id: id)));
+                              });
+                            }),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0, right: 12),
+                          child: elevate_button(
+                              fontSizeText: 14,
+                              radius: 25,
+                              width: 20,
+                              height: 25,
+                              backround: mainColor,
+                              text: "delete exam",
+                              function: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ActivateCourseScreen(id: id)));
+                              }),
+                        )
                       ],
                     ),
                   )
@@ -264,5 +331,40 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
         ),
       ),
     );
+  }
+
+  html.File? _pickedFile;
+  Uint8List? _imageData;
+  void _pickImage() async {
+    final input = html.FileUploadInputElement();
+    input.accept = 'image/';
+    input.click();
+    await input.onChange.first;
+    _pickedFile = input.files!.first;
+    final reader = html.FileReader();
+    reader.readAsArrayBuffer(_pickedFile!);
+    reader.onLoadEnd.listen((event) {
+      setState(() {
+        _imageData = reader.result as Uint8List?;
+      });
+    });
+  }
+
+  Future<String> getImageAsBase64() async {
+    final completer = Completer<String>();
+    final input = html.FileUploadInputElement();
+    input.accept = 'image/';
+    input.onChange.listen((event) {
+      final file = input.files!.first;
+      final reader = html.FileReader();
+      reader.readAsDataUrl(file);
+      reader.onLoad.listen((event) {
+        final encoded = reader.result as String;
+        completer.complete(
+            encoded.replaceFirst(RegExp('data:image/[^;]+;base64,'), ''));
+      });
+    });
+    input.click();
+    return completer.future;
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lang_hub_admin/courses%20activation/active_course_cubit.dart';
 import 'package:lang_hub_admin/home/home_screen.dart';
 import 'package:lang_hub_admin/languages_and_course/languages_and_courses_cubit.dart';
+import 'package:lang_hub_admin/waiting/waiting_screen.dart';
 import ' institute information/institute_information_screen.dart';
 import ' institute information/select_image.dart';
 import 'add_offer/add_offer_screen.dart';
@@ -24,7 +25,7 @@ void main() async{
   print(token);
   Widget widget = Container();
   if (token != null)
-    widget = HomeScreen();
+    widget = LoginScreen();
   else
     widget = LoginScreen();
   runApp(MyApp(startWidget: widget,));

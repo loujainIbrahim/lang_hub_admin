@@ -15,6 +15,7 @@ import '../core/widgets/snake_bar_widget.dart';
 import '../core/widgets/text_button.dart';
 import '../core/widgets/text_field.dart';
 import '../home/home_screen.dart';
+import '../waiting/waiting_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -29,25 +30,27 @@ class LoginScreen extends StatelessWidget {
       child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccessState) {
-           if(state.loginModel.token != null) {
+            if (state.loginModel.token != null) {
               html.window.localStorage['auth_token'] = state.loginModel.token!;
               token = state.loginModel.token!;
-              ErrorSnackBar.show(context, "successfully login");
+              print(LoginCubit.get(context).message);
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => HomeScreen()));
+              print(LoginCubit.get(context).message);
+
+              ErrorSnackBar.show(context, "successfully login");
 
               print("from model");
               print(state.loginModel.token);
               print("from cache");
               print(token);
-            }else  {
-             showAlertDialog(context, "email or password not correct");
-           }
-          } else if(state is LoginErrorState){
+            } else {
               showAlertDialog(context, "email or password not correct");
             }
+          } else if (state is LoginErrorState) {
+            showAlertDialog(context, "email or password not correct");
           }
-        ,
+        },
         builder: (context, state) {
           return Form(
             key: _key,
@@ -63,7 +66,7 @@ class LoginScreen extends StatelessWidget {
                         Image.asset('assets/images/logo.png'),
                         myTextField(
                             height: 50,
-                          maxxLines: 1,
+                            maxxLines: 1,
                             controller: email,
                             prefixIcon: Icon(Icons.email),
                             labelText: "Email",

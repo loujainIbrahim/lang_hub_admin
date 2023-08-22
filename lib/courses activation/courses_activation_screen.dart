@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lang_hub_admin/courses%20activation/active_course_cubit.dart';
+import 'package:lang_hub_admin/courses%20activation/show_exam/show_exam_screen.dart';
 import 'package:lang_hub_admin/teachers/teacherDetails/teacher_details_screen.dart';
 
 import '../core/color.dart';
@@ -122,7 +123,8 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4, // number of columns
                           crossAxisSpacing: 7.0, // spacing between columns
-                          mainAxisSpacing: 7.0, // spacing between rows
+                          mainAxisSpacing: 7.0,
+                          // spacing between rows
                         ),
                         itemCount:
                             activate_model!.data!.length, // number of items
@@ -166,14 +168,16 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
     String seats = price.toString();
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CourseDetailsScreen(id:id)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CourseDetailsScreen(id: id)));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
           width: ScreenUtil().setWidth(286),
-          height: ScreenUtil().setHeight(353),
+          height: ScreenUtil().setHeight(1063),
           decoration: BoxDecoration(
             color: fillColorInTextFormField,
             border: Border.all(
@@ -195,7 +199,7 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
                       topLeft: Radius.circular(30)),
                 ),
                 width: double.infinity,
-                height: ScreenUtil().setHeight(163),
+                height: ScreenUtil().setHeight(160),
                 child: ClipRRect(
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(30),
@@ -253,25 +257,22 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
                       color: mainColor,
                     ),
                   ),
+                  Text(
+                    "end " + end,
+                    style: TextStyle(
+                      fontSize: ScreenUtil().setSp(22), // smaller font size
+                      color: mainColor,
+                    ),
+                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
-                        "end " + end,
-                        style: TextStyle(
-                          fontSize: ScreenUtil().setSp(22), // smaller font size
-                          color: mainColor,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 2,
-                      ),
                       (hasExam == 0)
                           ? elevate_button(
-                              fontSizeText: 12,
+                              fontSizeText: 14,
                               radius: 10,
                               width: 18,
-                              height: 30,
+                              height: 50,
                               backround: mainColor,
                               text: "add exam",
                               function: () {
@@ -283,15 +284,40 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
                                             )));
                               })
                           : elevate_button(
-                              fontSizeText: 12,
+                              fontSizeText: 14,
                               radius: 10,
                               width: 18,
-                              height: 30,
+                              height: 50,
                               backround: ff5C3A81,
                               text: "add exam",
-                              function: () {})
+                              function: () {}),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 3.0),
+                        child: elevate_button(
+                            fontSizeText: 14,
+                            radius: 10,
+                            width: 18,
+                            height: 50,
+                            backround: mainColor,
+                            text: "show exam",
+                            function: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          QuestionsScreen(id)));
+                            }),
+                      ),
                     ],
                   ),
+                  elevate_button(
+                      fontSizeText: 14,
+                      radius: 10,
+                      width: 18,
+                      height: 40,
+                      backround: ff5C3A81,
+                      text: "delete exam",
+                      function: () {}),
                 ],
               ),
             ],

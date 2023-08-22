@@ -9,7 +9,7 @@ class CheckBoxExample extends StatefulWidget {
 
   const CheckBoxExample({
     Key? key,
-    this.defaultCheckListItems = const [], // Set a default list of items
+    required this.defaultCheckListItems , // Set a default list of items
   }) : super(key: key);
 
   @override

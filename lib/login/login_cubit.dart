@@ -13,6 +13,7 @@ part 'login_state.dart';
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitial());
   late LoginModel loginModel;
+  String? message;
   static LoginCubit get(context) => BlocProvider.of(context);
   void userlogin({required String email, required String password}) {
     emit(LoginLoadingState());
@@ -38,12 +39,5 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginChangePasswordVisibility());
   }
 
-  void getAccept() {
-    emit(AcceptLoadingState());
-    DioHelper.getData(url: "academy-admin/profile/accepted").then((value) {
-      emit(AcceptSuccessState(value.data["message"]));
-    }).catchError((onError) {
-      emit(AcceptErrorState(onError.toString()));
-    });
-  }
+
 }

@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lang_hub_admin/add_offer/add_offer_screen.dart';
+import 'package:lang_hub_admin/core/widgets/snake_bar_widget.dart';
 import 'package:lang_hub_admin/show_offers/offer_cubit.dart';
 import 'package:lang_hub_admin/show_offers/offer_model.dart';
 
 import '../core/color.dart';
+import '../core/widgets/alert.dart';
 
 class ShowOffersScreen extends StatefulWidget {
   const ShowOffersScreen({Key? key}) : super(key: key);
@@ -19,19 +21,19 @@ class ShowOffersScreen extends StatefulWidget {
 class _ShowOffersScreenState extends State<ShowOffersScreen> {
   late OfferCubit offerCubit;
   OfferModel? offerModel;
-  @override
-  void initState() {
-    super.initState();
-    offerCubit = OfferCubit();
-    offerCubit!.getOffers();
-  }
-
-  @override
-  void dispose() {
-    offerCubit!
-        .close(); // Close the RequestsTeachersCubit when the widget is disposed
-    super.dispose();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   offerCubit = OfferCubit();
+  //   offerCubit!.getOffers();
+  // }
+  //
+  // @override
+  // void dispose() {
+  //   offerCubit!
+  //       .close(); // Close the RequestsTeachersCubit when the widget is disposed
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +53,16 @@ class _ShowOffersScreenState extends State<ShowOffersScreen> {
         // add some space between the icon and the text
       ),
       body: BlocProvider(
-        create: (context) => offerCubit,
+        create: (context) => OfferCubit()..getOffers(),
         child: BlocConsumer<OfferCubit, OfferState>(
           listener: (context, state) {
+            if(state is DeleteOfferSuccess){
+              OfferCubit.get(context).getOffers();
+              ErrorSnackBar.show(context, state.message);
+            }
+            else if(state is DeleteOfferError){
+              showAlertDialog(context,state.error);
+            }
             // TODO: implement listener
           },
           builder: (context, state) {
@@ -132,7 +141,7 @@ Widget BuildItemListView(BuildContext context, Data data) {
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(30),
                     topLeft: Radius.circular(30)),
-                child: (data.image == null)
+                child: (data.image == null||data.image=="")
                     ? Container(
                         color: Colors.blue,
                       )
@@ -167,7 +176,9 @@ Widget BuildItemListView(BuildContext context, Data data) {
                     ),
                   ],
                 ),
-                IconButton(onPressed: () {}, icon: Icon(Icons.delete))
+                IconButton(onPressed: () {
+                  OfferCubit.get(context).deleteOffer(data!.id!);
+                }, icon: Icon(Icons.delete))
               ],
             ),
           ),

@@ -21,9 +21,8 @@ Widget ItemField(
           cursorColor: mainColor,
           validator: (value) {
             if (value!.isEmpty) {
-              return "this must be do\'nt empty";
+              return "must be not empty";
             }
-            return null;
           },
           style: TextStyle(color: Color(0xff210440)),
           decoration: InputDecoration(

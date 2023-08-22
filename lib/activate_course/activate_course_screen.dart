@@ -7,9 +7,11 @@ import 'package:flutter_material_pickers/helpers/show_time_picker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:lang_hub_admin/activate_course/activate_course_cubit.dart';
+import 'package:lang_hub_admin/core/widgets/snake_bar_widget.dart';
 import 'package:lang_hub_admin/core/widgets/text_field.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 import '../core/color.dart';
+import '../core/widgets/alert.dart';
 import '../core/widgets/drop_list_item.dart';
 import '../core/widgets/elevate_button.dart';
 import '../core/widgets/field_item_choose.dart';
@@ -51,15 +53,11 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
     'Intro C',
     'Intro D'
   ];
-  final List<String> dropdownItemsTeacher = [
-    'Loujain',
-    'Moauz',
-    'Abd',
-    'Kassem'
-  ];
+  List<String> dropdownItemsTeacher = [];
   String? selectedDropdownItemLang;
   String? selectedDropdownItemLevel;
   String? selectedDropdownTeacher;
+  int selectedDropdownIndex = 0;
   String _selectedItem = 'English';
   TextEditingController Sat1 = TextEditingController(text: "-");
   TextEditingController Sun1 = TextEditingController(text: "-");
@@ -86,16 +84,29 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
   DateTime starDate = DateTime.now();
   DateTime enDate = DateTime.now();
   DateTime selectedTime = DateTime.now();
-
+  int? selectedIndex = 3;
+  String? message;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ActivateCourseCubit(),
       child: BlocConsumer<ActivateCourseCubit, ActivateCourseState>(
         listener: (context, state) {
+          if (state is GetTeacherForCourseSuccessState) {
+            message = state.message;
+            showAlertDialog(context, message!);
+          }
+          if(state is ActivateCourseSuccessState){
+            ErrorSnackBar.show(context, "successfully activate");
+            Navigator.pop(context);
+          }
+          if(state is ActivateCourseErrorState){
+            showAlertDialog(context,state.error);
+          }
           // TODO: implement listener
         },
         builder: (context, state) {
+          final key = GlobalKey<FormState>();
           return Scaffold(
             appBar: AppBar(
               shape: Border(
@@ -119,608 +130,719 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
                     color: mainColor),
               ),
             ),
-            body: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            "choose language",
+            body: Form(
+              key: key,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            "number of sets:",
                             style: TextStyle(
                               fontSize:
                                   ScreenUtil().setSp(25), // smaller font size
                               color: mainColor,
                             ),
                           ),
-                        ),
-                        DropdownButtonWidget(
-                          h: 50.h,
-                          w: 250.w,
-                          items: dropdownItemsLang,
-                          selectedItem: selectedDropdownItemLang,
-                          onChanged: (String? selectedItem) {
-                            selectedDropdownItemLang = selectedItem;
-                            print('Selected item: $selectedItem');
-                          },
-                        ),
-                        Text(
-                          "number of sets:",
-                          style: TextStyle(
-                            fontSize:
-                                ScreenUtil().setSp(25), // smaller font size
-                            color: mainColor,
-                          ),
-                        ),
-                        ItemField(
-                            h: 85, controller: numberOfSets, ontap: () {}),
-                        Text(
-                          "start date: ",
-                          style: TextStyle(
-                            fontSize:
-                                ScreenUtil().setSp(25), // smaller font size
-                            color: mainColor,
-                          ),
-                        ),
-                        ItemField(
-                            h: 85,
-                            controller: startDate,
-                            ontap: () async {
-                              await _pickDate(startDate);
-                              starDate = DateTime.parse(startDate.text);
-                            }),
-                        Text(
-                          "end date:",
-                          style: TextStyle(
-                            fontSize:
-                                ScreenUtil().setSp(25), // smaller font size
-                            color: mainColor,
-                          ),
-                        ),
-                        ItemField(
-                            h: 85,
-                            controller: endDate,
-                            ontap: () async {
-                              await _pickDate(endDate);
-                              enDate == DateTime.parse(startDate.text);
-                            }),
-                        Text(
-                          "add price:",
-                          style: TextStyle(
-                            fontSize:
-                                ScreenUtil().setSp(25), // smaller font size
-                            color: mainColor,
-                          ),
-                        ),
-                        ItemField(h: 85, controller: Price, ontap: () {}),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "choose level:",
+                          ItemField(
+                              h: 85, controller: numberOfSets, ontap: () {}),
+                          Text(
+                            "start date: ",
                             style: TextStyle(
                               fontSize:
                                   ScreenUtil().setSp(25), // smaller font size
                               color: mainColor,
                             ),
                           ),
-                        ),
-                        DropdownButtonWidget(
-                          h: 50.h,
-                          w: 250.w,
-                          items: dropdownItemsLevel,
-                          selectedItem: selectedDropdownItemLevel,
-                          onChanged: (String? selectedItem) {
-                            selectedDropdownItemLevel = selectedItem;
-                            print('Selected item: $selectedItem');
-                          },
-                        ),
-                      ],
-                    ),
-                    Column(children: [
-                      Container(
-                        width: ScreenUtil().setWidth(800),
-                        height: ScreenUtil().setHeight(100),
-                        child: Text(
-                          "choose the time before choose the teacher please"
-                          "for found the time common between teacher and"
-                          "your course ",
-                          style: TextStyle(
-                              fontSize: ScreenUtil().setSp(30),
-                              color: mainColor),
-                        ),
+                          ItemField(
+                              h: 85,
+                              controller: startDate,
+                              ontap: () async {
+                                await _pickDate(startDate);
+                                starDate = DateTime.parse(startDate.text);
+                              }),
+                          Text(
+                            "end date:",
+                            style: TextStyle(
+                              fontSize:
+                                  ScreenUtil().setSp(25), // smaller font size
+                              color: mainColor,
+                            ),
+                          ),
+                          ItemField(
+                              h: 85,
+                              controller: endDate,
+                              ontap: () async {
+                                await _pickDate(endDate);
+                                enDate == DateTime.parse(startDate.text);
+                              }),
+                          Text(
+                            "add price:",
+                            style: TextStyle(
+                              fontSize:
+                                  ScreenUtil().setSp(25), // smaller font size
+                              color: mainColor,
+                            ),
+                          ),
+                          ItemField(h: 85, controller: Price, ontap: () {}),
+
+                        ],
                       ),
-                      Container(
-                        width: ScreenUtil().setWidth(480),
-                        // height: ScreenUtil().setHeight(260),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 40.0),
-                                  child: Text(
-                                    "from:",
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, bottom: 4),
-                                  child: Text("to:",
-                                      style: TextStyle(fontSize: 20)),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              width: ScreenUtil().setWidth(480),
-                              // height: ScreenUtil().setHeight(260),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                      Column(children: [
+                        Container(
+                          width: ScreenUtil().setWidth(800),
+                          height: ScreenUtil().setHeight(100),
+                          child: Text(
+                            "choose the time before choose the teacher please"
+                            "for found the time common between teacher and"
+                            "your course ",
+                            style: TextStyle(
+                                fontSize: ScreenUtil().setSp(30),
+                                color: mainColor),
+                          ),
+                        ),
+                        Container(
+                          width: ScreenUtil().setWidth(480),
+                          // height: ScreenUtil().setHeight(260),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: ScreenUtil().setWidth(144),
-                                          height: ScreenUtil().setHeight(55),
-                                          child: LiteRollingSwitch(
-                                            value: OnSat,
-                                            textOn: days[0],
-                                            textOff: days[0],
-                                            colorOn: mainColor,
-                                            textOffColor: Colors.white,
-                                            textOnColor: Colors.white,
-                                            colorOff: Colors.grey,
-                                            iconOff: Icons.delete,
-                                            iconOn: Icons.add,
-                                            // animationDuration: const Duration(milliseconds: 300),
-                                            onChanged: (bool state) {
-                                              setState(() {
-                                                OnSat = state;
-                                                print(
-                                                    "boooooooooooooooolllllllll ");
-                                                print(OnSat);
-                                              });
-                                            },
-                                            onDoubleTap: () {},
-                                            onSwipe: () {},
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Sat1,
-                                            ontap: () {
-                                              _selectTime(context, Sat1);
-                                              print(selectedTime);
-                                            }),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Sat2,
-                                            ontap: () {
-                                              _selectTime(context, Sat2);
-                                            }),
-                                      ],
+                                    padding: const EdgeInsets.only(left: 40.0),
+                                    child: Text(
+                                      "from:",
+                                      style: TextStyle(fontSize: 20),
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: ScreenUtil().setWidth(144),
-                                          height: ScreenUtil().setHeight(55),
-                                          child: LiteRollingSwitch(
-                                            value: OnSun,
-                                            textOn: days[1],
-                                            textOff: days[1],
-                                            colorOn: mainColor,
-                                            textOffColor: Colors.white,
-                                            textOnColor: Colors.white,
-                                            colorOff: Colors.grey,
-                                            iconOff: Icons.delete,
-                                            iconOn: Icons.add,
-                                            // animationDuration: const Duration(milliseconds: 300),
-                                            onChanged: (bool state) {
-                                              setState(() {
-                                                OnSun = state;
-                                                print(
-                                                    "boooooooooooooooolllllllll ");
-                                                print(OnSun);
-                                              });
-                                            },
-                                            onDoubleTap: () {},
-                                            onSwipe: () {},
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Sun1,
-                                            ontap: () {
-                                              _selectTime(context, Sun1);
-                                            }),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Sun2,
-                                            ontap: () {
-                                              _selectTime(context, Sun2);
-                                            }),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: ScreenUtil().setWidth(144),
-                                          height: ScreenUtil().setHeight(55),
-                                          child: LiteRollingSwitch(
-                                            value: OnMon,
-                                            textOn: days[2],
-                                            textOff: days[2],
-                                            colorOn: mainColor,
-                                            textOffColor: Colors.white,
-                                            textOnColor: Colors.white,
-                                            colorOff: Colors.grey,
-                                            iconOff: Icons.delete,
-                                            iconOn: Icons.add,
-                                            // animationDuration: const Duration(milliseconds: 300),
-                                            onChanged: (bool state) {
-                                              setState(() {
-                                                OnMon = state;
-                                                print(
-                                                    "boooooooooooooooolllllllll ");
-                                                print(OnMon);
-                                              });
-                                            },
-                                            onDoubleTap: () {},
-                                            onSwipe: () {},
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Mon1,
-                                            ontap: () {
-                                              _selectTime(context, Mon1);
-                                            }),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Mon2,
-                                            ontap: () {
-                                              _selectTime(context, Mon2);
-                                            }),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: ScreenUtil().setWidth(144),
-                                          height: ScreenUtil().setHeight(55),
-                                          child: LiteRollingSwitch(
-                                            value: OnTue,
-                                            textOn: days[3],
-                                            textOff: days[3],
-                                            colorOn: mainColor,
-                                            textOffColor: Colors.white,
-                                            textOnColor: Colors.white,
-                                            colorOff: Colors.grey,
-                                            iconOff: Icons.delete,
-                                            iconOn: Icons.add,
-                                            // animationDuration: const Duration(milliseconds: 300),
-                                            onChanged: (bool state) {
-                                              setState(() {
-                                                OnTue = state;
-                                                print(
-                                                    "boooooooooooooooolllllllll ");
-                                                print(OnTue);
-                                              });
-                                            },
-                                            onDoubleTap: () {},
-                                            onSwipe: () {},
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Tue1,
-                                            ontap: () {
-                                              _selectTime(context, Tue1);
-                                            }),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Tue2,
-                                            ontap: () {
-                                              _selectTime(context, Tue2);
-                                            }),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: ScreenUtil().setWidth(144),
-                                          height: ScreenUtil().setHeight(55),
-                                          child: LiteRollingSwitch(
-                                            value: OnWen,
-                                            textOn: days[4],
-                                            textOff: days[4],
-                                            colorOn: mainColor,
-                                            textOffColor: Colors.white,
-                                            textOnColor: Colors.white,
-                                            colorOff: Colors.grey,
-                                            iconOff: Icons.delete,
-                                            iconOn: Icons.add,
-                                            // animationDuration: const Duration(milliseconds: 300),
-                                            onChanged: (bool state) {
-                                              setState(() {
-                                                OnWen = state;
-                                                print(
-                                                    "boooooooooooooooolllllllll ");
-                                                print(OnWen);
-                                              });
-                                            },
-                                            onDoubleTap: () {},
-                                            onSwipe: () {},
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Wen1,
-                                            ontap: () {
-                                              _selectTime(context, Wen1);
-                                            }),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Wen2,
-                                            ontap: () {
-                                              _selectTime(context, Wen2);
-                                            }),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: ScreenUtil().setWidth(144),
-                                          height: ScreenUtil().setHeight(55),
-                                          child: LiteRollingSwitch(
-                                            value: OnFri,
-                                            textOn: days[5],
-                                            textOff: days[5],
-                                            colorOn: mainColor,
-                                            textOffColor: Colors.white,
-                                            textOnColor: Colors.white,
-                                            colorOff: Colors.grey,
-                                            iconOff: Icons.delete,
-                                            iconOn: Icons.add,
-                                            // animationDuration: const Duration(milliseconds: 300),
-                                            onChanged: (bool state) {
-                                              setState(() {
-                                                OnFri = state;
-                                                print(
-                                                    "boooooooooooooooolllllllll ");
-                                                print(OnFri);
-                                              });
-                                            },
-                                            onDoubleTap: () {},
-                                            onSwipe: () {},
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Fri1,
-                                            ontap: () {
-                                              _selectTime(context, Fri1);
-                                            }),
-                                        ItemField(
-                                            w: 150,
-                                            h: 85,
-                                            controller: Fri2,
-                                            ontap: () {
-                                              _selectTime(context, Fri2);
-                                            }),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          width: ScreenUtil().setWidth(144),
-                                          height: ScreenUtil().setHeight(55),
-                                          child: LiteRollingSwitch(
-                                            value: OnThu,
-                                            textOn: days[6],
-                                            textOff: days[6],
-                                            colorOn: mainColor,
-                                            textOffColor: Colors.white,
-                                            textOnColor: Colors.white,
-                                            colorOff: Colors.grey,
-                                            iconOff: Icons.delete,
-                                            iconOn: Icons.add,
-                                            // animationDuration: const Duration(milliseconds: 300),
-                                            onChanged: (bool state) {
-                                              setState(() {
-                                                OnThu = state;
-                                                print(
-                                                    "boooooooooooooooolllllllll ");
-                                                print(OnThu);
-                                              });
-                                            },
-                                            onDoubleTap: () {},
-                                            onSwipe: () {},
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                        ItemField(
-                                          w: 150,
-                                          h: 85,
-                                          controller: Thu1,
-                                          ontap: () {
-                                            _selectTime(context, Thu1);
-                                          },
-                                        ),
-                                        ItemField(
-                                          w: 150,
-                                          h: 85,
-                                          controller: Thu2,
-                                          ontap: () {
-                                            _selectTime(context, Thu2);
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, bottom: 4),
+                                    child: Text("to:",
+                                        style: TextStyle(fontSize: 20)),
                                   ),
                                 ],
                               ),
-                            ) //
+                              Container(
+                                width: ScreenUtil().setWidth(480),
+                                // height: ScreenUtil().setHeight(260),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: ScreenUtil().setWidth(144),
+                                            height: ScreenUtil().setHeight(55),
+                                            child: LiteRollingSwitch(
+                                              value: OnSat,
+                                              textOn: days[0],
+                                              textOff: days[0],
+                                              colorOn: mainColor,
+                                              textOffColor: Colors.white,
+                                              textOnColor: Colors.white,
+                                              colorOff: Colors.grey,
+                                              iconOff: Icons.delete,
+                                              iconOn: Icons.add,
+                                              // animationDuration: const Duration(milliseconds: 300),
+                                              onChanged: (bool state) {
+                                                setState(() {
+                                                  OnSat = state;
+                                                  print(
+                                                      "boooooooooooooooolllllllll ");
+                                                  print(OnSat);
+                                                });
+                                              },
+                                              onDoubleTap: () {},
+                                              onSwipe: () {},
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Sat1,
+                                              ontap: () {
+                                                _selectTime(context, Sat1);
+                                                print(selectedTime);
+                                              }),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Sat2,
+                                              ontap: () {
+                                                _selectTime(context, Sat2);
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: ScreenUtil().setWidth(144),
+                                            height: ScreenUtil().setHeight(55),
+                                            child: LiteRollingSwitch(
+                                              value: OnSun,
+                                              textOn: days[1],
+                                              textOff: days[1],
+                                              colorOn: mainColor,
+                                              textOffColor: Colors.white,
+                                              textOnColor: Colors.white,
+                                              colorOff: Colors.grey,
+                                              iconOff: Icons.delete,
+                                              iconOn: Icons.add,
+                                              // animationDuration: const Duration(milliseconds: 300),
+                                              onChanged: (bool state) {
+                                                setState(() {
+                                                  OnSun = state;
+                                                  print(
+                                                      "boooooooooooooooolllllllll ");
+                                                  print(OnSun);
+                                                });
+                                              },
+                                              onDoubleTap: () {},
+                                              onSwipe: () {},
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Sun1,
+                                              ontap: () {
+                                                _selectTime(context, Sun1);
+                                              }),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Sun2,
+                                              ontap: () {
+                                                _selectTime(context, Sun2);
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: ScreenUtil().setWidth(144),
+                                            height: ScreenUtil().setHeight(55),
+                                            child: LiteRollingSwitch(
+                                              value: OnMon,
+                                              textOn: days[2],
+                                              textOff: days[2],
+                                              colorOn: mainColor,
+                                              textOffColor: Colors.white,
+                                              textOnColor: Colors.white,
+                                              colorOff: Colors.grey,
+                                              iconOff: Icons.delete,
+                                              iconOn: Icons.add,
+                                              // animationDuration: const Duration(milliseconds: 300),
+                                              onChanged: (bool state) {
+                                                setState(() {
+                                                  OnMon = state;
+                                                  print(
+                                                      "boooooooooooooooolllllllll ");
+                                                  print(OnMon);
+                                                });
+                                              },
+                                              onDoubleTap: () {},
+                                              onSwipe: () {},
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Mon1,
+                                              ontap: () {
+                                                _selectTime(context, Mon1);
+                                              }),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Mon2,
+                                              ontap: () {
+                                                _selectTime(context, Mon2);
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: ScreenUtil().setWidth(144),
+                                            height: ScreenUtil().setHeight(55),
+                                            child: LiteRollingSwitch(
+                                              value: OnTue,
+                                              textOn: days[3],
+                                              textOff: days[3],
+                                              colorOn: mainColor,
+                                              textOffColor: Colors.white,
+                                              textOnColor: Colors.white,
+                                              colorOff: Colors.grey,
+                                              iconOff: Icons.delete,
+                                              iconOn: Icons.add,
+                                              // animationDuration: const Duration(milliseconds: 300),
+                                              onChanged: (bool state) {
+                                                setState(() {
+                                                  OnTue = state;
+                                                  print(
+                                                      "boooooooooooooooolllllllll ");
+                                                  print(OnTue);
+                                                });
+                                              },
+                                              onDoubleTap: () {},
+                                              onSwipe: () {},
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Tue1,
+                                              ontap: () {
+                                                _selectTime(context, Tue1);
+                                              }),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Tue2,
+                                              ontap: () {
+                                                _selectTime(context, Tue2);
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: ScreenUtil().setWidth(144),
+                                            height: ScreenUtil().setHeight(55),
+                                            child: LiteRollingSwitch(
+                                              value: OnWen,
+                                              textOn: days[4],
+                                              textOff: days[4],
+                                              colorOn: mainColor,
+                                              textOffColor: Colors.white,
+                                              textOnColor: Colors.white,
+                                              colorOff: Colors.grey,
+                                              iconOff: Icons.delete,
+                                              iconOn: Icons.add,
+                                              // animationDuration: const Duration(milliseconds: 300),
+                                              onChanged: (bool state) {
+                                                setState(() {
+                                                  OnWen = state;
+                                                  print(
+                                                      "boooooooooooooooolllllllll ");
+                                                  print(OnWen);
+                                                });
+                                              },
+                                              onDoubleTap: () {},
+                                              onSwipe: () {},
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Wen1,
+                                              ontap: () {
+                                                _selectTime(context, Wen1);
+                                              }),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Wen2,
+                                              ontap: () {
+                                                _selectTime(context, Wen2);
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: ScreenUtil().setWidth(144),
+                                            height: ScreenUtil().setHeight(55),
+                                            child: LiteRollingSwitch(
+                                              value: OnFri,
+                                              textOn: days[5],
+                                              textOff: days[5],
+                                              colorOn: mainColor,
+                                              textOffColor: Colors.white,
+                                              textOnColor: Colors.white,
+                                              colorOff: Colors.grey,
+                                              iconOff: Icons.delete,
+                                              iconOn: Icons.add,
+                                              // animationDuration: const Duration(milliseconds: 300),
+                                              onChanged: (bool state) {
+                                                setState(() {
+                                                  OnFri = state;
+                                                  print(
+                                                      "boooooooooooooooolllllllll ");
+                                                  print(OnFri);
+                                                });
+                                              },
+                                              onDoubleTap: () {},
+                                              onSwipe: () {},
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Fri1,
+                                              ontap: () {
+                                                _selectTime(context, Fri1);
+                                              }),
+                                          ItemField(
+                                              w: 150,
+                                              h: 85,
+                                              controller: Fri2,
+                                              ontap: () {
+                                                _selectTime(context, Fri2);
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 4.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            width: ScreenUtil().setWidth(144),
+                                            height: ScreenUtil().setHeight(50),
+                                            child: LiteRollingSwitch(
+                                              value: OnThu,
+                                              textOn: days[6],
+                                              textOff: days[6],
+                                              colorOn: mainColor,
+                                              textOffColor: Colors.white,
+                                              textOnColor: Colors.white,
+                                              colorOff: Colors.grey,
+                                              iconOff: Icons.delete,
+                                              iconOn: Icons.add,
+                                              // animationDuration: const Duration(milliseconds: 300),
+                                              onChanged: (bool state) {
+                                                setState(() {
+                                                  OnThu = state;
+                                                  print(
+                                                      "boooooooooooooooolllllllll ");
+                                                  print(OnThu);
+                                                });
+                                              },
+                                              onDoubleTap: () {},
+                                              onSwipe: () {},
+                                              onTap: () {},
+                                            ),
+                                          ),
+                                          ItemField(
+                                            w: 150,
+                                            h: 85,
+                                            controller: Thu1,
+                                            ontap: () {
+                                              _selectTime(context, Thu1);
+                                            },
+                                          ),
+                                          ItemField(
+                                            w: 150,
+                                            h: 85,
+                                            controller: Thu2,
+                                            ontap: () {
+                                              _selectTime(context, Thu2);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ) //
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              "choose your teacher:",
+                              style: TextStyle(
+                                fontSize:
+                                    ScreenUtil().setSp(25), // smaller font size
+                                color: mainColor,
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    DropdownButtonWidget(
+                                      h: 45.h,
+                                      w: 350.w,
+                                      items: ActivateCourseCubit.get(context)
+                                          .teacherNames!,
+                                      selectedItem: selectedDropdownTeacher,
+                                      onChanged: (String? selectedItem) {
+                                        selectedDropdownTeacher = selectedItem;
+                                        print('Selected item: $selectedItem');
+                                        print(ActivateCourseCubit.get(context)
+                                            .teacherNames!
+                                            .length);
+                                        selectedIndex =
+                                            ActivateCourseCubit.get(context)
+                                                .teacherNames!
+                                                .indexOf(selectedItem!);
+                                        print('Selected index: $selectedIndex');
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    ConditionalBuilder(
+                                        condition: state
+                                            is! GetTeacherForCourseLoadingState,
+                                        fallback: (context) => Center(
+                                              child: Container(
+                                                  width: 30,
+                                                  height: 20,
+                                                  child:
+                                                      CircularProgressIndicator()),
+                                            ),
+                                        builder: (context) {
+                                          return elevate_button(
+                                              fontSizeText: 14,
+                                              width: 105,
+                                              height: 40,
+                                              backround: mainColor,
+                                              text: 'get teacher',
+                                              function: () {
+                                                ActivateCourseCubit.get(context)
+                                                    .getTeacherforCourse(
+                                                        widget.id,
+                                                        (OnSat) ? 1 : 0,
+                                                        (Sat1.text != null)
+                                                            ? Sat1.text
+                                                            : "-",
+                                                        (Sat2.text != null)
+                                                            ? Sat2.text
+                                                            : "-",
+                                                        (OnSun) ? 1 : 0,
+                                                        (Sun1.text != null)
+                                                            ? Sun1.text
+                                                            : "-",
+                                                        (Sun2.text != null)
+                                                            ? Sun2.text
+                                                            : "-",
+                                                        (OnMon) ? 1 : 0,
+                                                        (Mon1.text != null)
+                                                            ? Mon1.text
+                                                            : "-",
+                                                        (Mon2.text != null)
+                                                            ? Mon2.text
+                                                            : "-",
+                                                        (OnTue) ? 1 : 0,
+                                                        (Tue1.text != null)
+                                                            ? Tue1.text
+                                                            : "-",
+                                                        (Tue2.text != null)
+                                                            ? Tue2.text
+                                                            : "-",
+                                                        (OnWen) ? 1 : 0,
+                                                        (Wen1.text != null)
+                                                            ? Wen1.text
+                                                            : "-",
+                                                        (Wen2.text != null)
+                                                            ? Wen2.text
+                                                            : "-",
+                                                        (OnThu) ? 1 : 0,
+                                                        (Thu1.text != null)
+                                                            ? Thu1.text
+                                                            : "-",
+                                                        (Thu2.text != null)
+                                                            ? Thu2.text
+                                                            : "-",
+                                                        (OnFri) ? 1 : 0,
+                                                        (Fri1.text != null)
+                                                            ? Fri1.text
+                                                            : "-",
+                                                        (Fri2.text != null)
+                                                            ? Fri2.text
+                                                            : "-");
+
+                                                setState(() {
+                                                  dropdownItemsTeacher =
+                                                      ActivateCourseCubit.get(
+                                                              context)
+                                                          .teacherNames!;
+                                                  print(ActivateCourseCubit.get(
+                                                          context)
+                                                      .teacherNames!
+                                                      .length);
+                                                  message =
+                                                      ActivateCourseCubit.get(
+                                                              context)
+                                                          .message;
+                                                  print(message);
+                                                });
+
+                                                print(OnSat);
+                                                print(Sat1.text);
+                                                print(Sat2.text);
+                                                print(OnSun);
+                                                print(Sun1.text);
+                                                print(Sun2.text);
+                                                print(OnMon);
+                                                print(Mon1.text);
+                                                print(Mon2.text);
+                                                print(OnTue);
+                                                print(Tue1.text);
+                                                print(Tue2.text);
+                                                print(OnWen);
+                                                print(Wen1.text);
+                                                print(Wen2.text);
+                                                print(OnThu);
+                                                print(Thu1.text);
+                                                print(Thu2.text);
+                                                print(OnFri);
+                                                print(Fri1.text);
+                                                print(Fri2.text);
+                                              });
+                                        }),
+                                  ],
+                                ),
+                                (message != null)
+                                    ? Text(
+                                        message!,
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.green),
+                                      )
+                                    : Container()
+                              ],
+                            ),
                           ],
                         ),
-                      ),
-                      Text(
-                        "choose your teacher:",
-                        style: TextStyle(
-                          fontSize: ScreenUtil().setSp(25), // smaller font size
-                          color: mainColor,
-                        ),
-                      ),
-                      DropdownButtonWidget(
-                        h: 50.h,
-                        w: 250.w,
-                        items: dropdownItemsLevel,
-                        selectedItem: selectedDropdownItemLevel,
-                        onChanged: (String? selectedItem) {
-                          selectedDropdownItemLevel = selectedItem;
-                          print('Selected item: $selectedItem');
-                        },
-                      ),
-                    ])
-                  ],
-                ),
-                ConditionalBuilder(
-                    condition: state is! ActivateCourseLoadingState,
-                    fallback: (context) => Center(
-                          child: Container(
-                              width: 40,
-                              height: 20,
-                              child: CircularProgressIndicator()),
-                        ),
-                    builder: (context) {
-                      return elevate_button(
-                          width: 305,
-                          height: 55,
-                          backround: mainColor,
-                          text: 'Activate',
-                          function: () {
-                            int num = int.parse(numberOfSets.text);
-                            int p = int.parse(Price.text);
+                      ])
+                    ],
+                  ),
+                  ConditionalBuilder(
+                      condition: state is! ActivateCourseLoadingState,
+                      fallback: (context) => Center(
+                            child: Container(
+                                width: 40,
+                                height: 15,
+                                child: CircularProgressIndicator()),
+                          ),
+                      builder: (context) {
+                        return elevate_button(
+                            width: 305,
+                            height: 35,
+                            backround: mainColor,
+                            text: 'Activate',
+                            function: () {
+                              int num = int.parse(numberOfSets.text);
+                              int p = int.parse(Price.text);
 
-                            ActivateCourseCubit.get(context).ActiveCoursePost(
-                                widget.id,
-                                selectedDropdownItemLang!,
-                                selectedDropdownItemLevel!,
-                                num,
-                                starDate,
-                                enDate,
-                                p,
-                                (OnSat) ? 1 : 0,
-                                (Sat1.text != null) ? Sat1.text : "-",
-                                (Sat2.text != null) ? Sat2.text : "-",
-                                (OnSun) ? 1 : 0,
-                                (Sun1.text != null) ? Sun1.text : "-",
-                                (Sun2.text != null) ? Sun2.text : "-",
-                                (OnMon) ? 1 : 0,
-                                (Mon1.text != null) ? Mon1.text : "-",
-                                (Mon2.text != null) ? Mon2.text : "-",
-                                (OnTue) ? 1 : 0,
-                                (Tue1.text != null) ? Tue1.text : "-",
-                                (Tue2.text != null) ? Tue2.text : "-",
-                                (OnWen) ? 1 : 0,
-                                (Wen1.text != null) ? Wen1.text : "-",
-                                (Wen2.text != null) ? Wen2.text : "-",
-                                (OnThu) ? 1 : 0,
-                                (Thu1.text != null) ? Thu1.text : "-",
-                                (Thu2.text != null) ? Thu2.text : "-",
-                                (OnFri) ? 1 : 0,
-                                (Fri1.text != null) ? Fri1.text : "-",
-                                (Fri2.text != null) ? Fri2.text : "-");
-                            print(num);
-                            print(starDate);
-                            print(enDate);
-                            print(p);
-                            print(OnSat);
-                            print(Sat1.text);
-                            print(Sat2.text);
-                            print(OnSun);
-                            print(Sun1.text);
-                            print(Sun2.text);
-                            print(OnMon);
-                            print(Mon1.text);
-                            print(Mon2.text);
-                            print(OnTue);
-                            print(Tue1.text);
-                            print(Tue2.text);
-                            print(OnWen);
-                            print(Wen1.text);
-                            print(Wen2.text);
-                            print(OnThu);
-                            print(Thu1.text);
-                            print(Thu2.text);
-                            print(OnFri);
-                            print(Fri1.text);
-                            print(Fri2.text);
-                          });
-                    })
-              ],
+                              ActivateCourseCubit.get(context).ActiveCoursePost(
+                                  widget.id,
+                                  num,
+                                  starDate,
+                                  enDate,
+                                  p,
+                                  selectedIndex!,
+                                  (OnSat) ? 1 : 0,
+                                  (Sat1.text != null) ? Sat1.text : "-",
+                                  (Sat2.text != null) ? Sat2.text : "-",
+                                  (OnSun) ? 1 : 0,
+                                  (Sun1.text != null) ? Sun1.text : "-",
+                                  (Sun2.text != null) ? Sun2.text : "-",
+                                  (OnMon) ? 1 : 0,
+                                  (Mon1.text != null) ? Mon1.text : "-",
+                                  (Mon2.text != null) ? Mon2.text : "-",
+                                  (OnTue) ? 1 : 0,
+                                  (Tue1.text != null) ? Tue1.text : "-",
+                                  (Tue2.text != null) ? Tue2.text : "-",
+                                  (OnWen) ? 1 : 0,
+                                  (Wen1.text != null) ? Wen1.text : "-",
+                                  (Wen2.text != null) ? Wen2.text : "-",
+                                  (OnThu) ? 1 : 0,
+                                  (Thu1.text != null) ? Thu1.text : "-",
+                                  (Thu2.text != null) ? Thu2.text : "-",
+                                  (OnFri) ? 1 : 0,
+                                  (Fri1.text != null) ? Fri1.text : "-",
+                                  (Fri2.text != null) ? Fri2.text : "-");
+                              print(num);
+                              print(starDate);
+                              print(enDate);
+                              print(p);
+                              print(OnSat);
+                              print(Sat1.text);
+                              print(Sat2.text);
+                              print(OnSun);
+                              print(Sun1.text);
+                              print(Sun2.text);
+                              print(OnMon);
+                              print(Mon1.text);
+                              print(Mon2.text);
+                              print(OnTue);
+                              print(Tue1.text);
+                              print(Tue2.text);
+                              print(OnWen);
+                              print(Wen1.text);
+                              print(Wen2.text);
+                              print(OnThu);
+                              print(Thu1.text);
+                              print(Thu2.text);
+                              print(OnFri);
+                              print(Fri1.text);
+                              print(Fri2.text);
+                            });
+                      })
+                ],
+              ),
             ),
           );
         },
@@ -993,6 +1115,60 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
   //
   //   return selectedMinutes >= startMinutes && selectedMinutes <= endMinutes;
   // }
+
+  Widget ItemField({
+    required TextEditingController controller,
+    int w = 549,
+    int h = 65,
+    int? maxxLines,
+    required Function() ontap,
+  }) {
+    return SizedBox(
+      height: ScreenUtil().setHeight(h),
+      width: ScreenUtil().setWidth(w),
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        maxLines: maxxLines,
+        onTap: ontap,
+        controller: controller,
+        cursorColor: mainColor,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return "must not be empty";
+          }
+          if (controller == Price) {
+            if (double.tryParse(value) == null) {
+              return "price must be a number";
+            }
+            if (double.parse(value) <= 0) {
+              return "price must be greater than 0";
+            }
+            if (!RegExp(r'^\d+$').hasMatch(value)) {
+              return "price must contain only digits";
+            }
+          }
+          return null;
+        },
+        style: TextStyle(color: Color(0xff210440)),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: fillColorInTextFormField,
+          labelStyle: TextStyle(color: mainColor),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30.0),
+            borderSide: BorderSide(width: 2.w, color: mainColor),
+          ),
+          hintStyle: TextStyle(color: mainColor),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: BorderSide(
+              color: Color(0xFF210440),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget BuidSwitch(String day, bool t) {
     return Container(

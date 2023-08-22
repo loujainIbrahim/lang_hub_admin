@@ -25,22 +25,6 @@ class TeachersScreen extends StatelessWidget {
         return Scaffold(
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    elevate_button(
-                        backround: mainColor,
-                        text: "Approved",
-                        function: () {}),
-                    elevate_button(
-                        backround: mainColor,
-                        text: "In courses",
-                        function: () {}),
-                  ],
-                ),
-              ),
               ConditionalBuilder(
                 condition: HomeCubit.get(context).teachersModel != null,
                 fallback: (context) => Center(
@@ -84,15 +68,14 @@ class TeachersScreen extends StatelessWidget {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(30.0),
                                     child: Image.network(
-                                            HomeCubit.get(context)
-                                                .teachersModel!
-                                                .data![index]
-                                                .photo!
-                                                .replaceAll(" ",
-                                                    "%20"), // Replace the space character with %20
-                                            fit: BoxFit.cover,
-                                          )
-                                       ,
+                                      HomeCubit.get(context)
+                                          .teachersModel!
+                                          .data![index]
+                                          .photo!
+                                          .replaceAll(" ",
+                                              "%20"), // Replace the space character with %20
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(

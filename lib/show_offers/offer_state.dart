@@ -13,3 +13,22 @@ class OfferErrorState extends OfferState {
  final String  error;
  OfferErrorState(this.error);
 }
+class AddOfferLoading extends OfferState{}
+class AddOfferSuccess extends OfferState{
+
+ AddOfferSuccess();
+}
+class AddOfferError extends OfferState{
+ final String error;
+ AddOfferError(this.error);
+}
+
+class DeleteOfferLoading extends OfferState{}
+class DeleteOfferSuccess extends OfferState{
+final String message;
+ DeleteOfferSuccess(this.message);
+}
+class DeleteOfferError extends OfferState{
+ final String error;
+ DeleteOfferError(this.error);
+}

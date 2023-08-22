@@ -14,14 +14,5 @@ class LoginErrorState extends LoginState{
   LoginErrorState(this.error);
 }
 class LoginChangePasswordVisibility extends LoginState{}
-class AcceptLoadingState extends LoginState {
 
-}
-class AcceptSuccessState extends LoginState {
-  final String message;
-  AcceptSuccessState(this.message);
-}
-class AcceptErrorState extends LoginState{
-  final String error;
-  AcceptErrorState(this.error);
-}
+
