@@ -32,3 +32,13 @@ class DeleteOfferError extends OfferState{
  final String error;
  DeleteOfferError(this.error);
 }
+
+class GetTeacherForOfferLoading extends OfferState{}
+class GetTeacherForOfferSuccess extends OfferState{
+ final String message;
+ GetTeacherForOfferSuccess(this.message);
+}
+class GetTeacherForOfferError extends OfferState{
+ final String error;
+ GetTeacherForOfferError(this.error);
+}

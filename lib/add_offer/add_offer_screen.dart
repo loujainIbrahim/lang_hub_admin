@@ -53,12 +53,8 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
     'Intro C',
     'Intro D'
   ];
-  final List<String> dropdownItemsTeacher = [
-    'Loujain',
-    'Moauz',
-    'Abd',
-    'Kassem'
-  ];
+   List<String> dropdownItemsTeacher = [];
+  String? message;
   String? selectedDropdownItemLang;
   String? selectedDropdownItemLevel;
   String? selectedDropdownTeacher;
@@ -77,6 +73,8 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
   TextEditingController Wen2 = TextEditingController(text: "-");
   TextEditingController Thu2 = TextEditingController(text: "-");
   TextEditingController Fri2 = TextEditingController(text: "-");
+  int? selectedIndex = 3;
+
 
   bool OnSat = false;
   bool OnSun = false;
@@ -398,14 +396,14 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
+                              padding: const EdgeInsets.only(bottom: 3.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     width: ScreenUtil().setWidth(144),
-                                    height: ScreenUtil().setHeight(55),
+                                    height: ScreenUtil().setHeight(51),
                                     child: LiteRollingSwitch(
                                       value: OnSun,
                                       textOn: days[1],
@@ -696,26 +694,112 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
                           ],
                         ),
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            "choose your teacher:",
-                            style: TextStyle(
-                              fontSize:
-                                  ScreenUtil().setSp(25), // smaller font size
-                              color: mainColor,
+                      Container(
+                        height: 49.2,
+                        child: Column(
+                          children: [
+                            Text(
+                              "choose your teacher:",
+                              style: TextStyle(
+                                fontSize:
+                                ScreenUtil().setSp(25), // smaller font size
+                                color: mainColor,
+                              ),
                             ),
-                          ),
-                          DropdownButtonWidget(
-                            items: dropdownItems,
-                            selectedItem: selectedDropdownItem,
-                            onChanged: (String? selectedItem) {
-                              selectedDropdownItem = selectedItem;
-                              print('Selected item: $selectedItem');
-                            },
-                          ),
-                        ],
-                      ),
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    DropdownButtonWidget(
+                                      h: 45.h,
+                                      w: 350.w,
+                                      items: OfferCubit.get(context)
+                                          .teacherNames!,
+                                      selectedItem: selectedDropdownTeacher,
+                                      onChanged: (String? selectedItem) {
+                                        selectedDropdownTeacher = selectedItem;
+                                        print('Selected item: $selectedItem');
+                                        print(OfferCubit.get(context)
+                                            .teacherNames!
+                                            .length);
+                                        selectedIndex =
+                                            OfferCubit.get(context)
+                                                .teacherNames!
+                                                .indexOf(selectedItem!);
+                                        print('Selected index: $selectedIndex');
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    ConditionalBuilder(
+                                        condition: state
+                                        is! GetTeacherForOfferLoading,
+                                        fallback: (context) => Center(
+                                          child: Container(
+                                              width: 30,
+                                              height: 20,
+                                              child:
+                                              CircularProgressIndicator()),
+                                        ),
+                                        builder: (context) {
+                                          return elevate_button(
+                                              fontSizeText: 14,
+                                              width: 105,
+                                              height: 35,
+                                              backround: mainColor,
+                                              text: 'get teacher',
+                                              function: () {
+                                                OfferCubit.get(context)
+                                                    .getTeachersForOffer();
+
+                                                setState(() {
+                                                  dropdownItemsTeacher =
+                                                  OfferCubit.get(
+                                                      context)
+                                                      .teacherNames!;
+                                                  print(OfferCubit.get(
+                                                      context)
+                                                      .teacherNames!
+                                                      .length);
+                                                  message =
+                                                      OfferCubit.get(
+                                                          context)
+                                                          .message;
+                                                  print(message);
+                                                });
+
+                                                print(OnSat);
+                                                print(Sat1.text);
+                                                print(Sat2.text);
+                                                print(OnSun);
+                                                print(Sun1.text);
+                                                print(Sun2.text);
+                                                print(OnMon);
+                                                print(Mon1.text);
+                                                print(Mon2.text);
+                                                print(OnTue);
+                                                print(Tue1.text);
+                                                print(Tue2.text);
+                                                print(OnWen);
+                                                print(Wen1.text);
+                                                print(Wen2.text);
+                                                print(OnThu);
+                                                print(Thu1.text);
+                                                print(Thu2.text);
+                                                print(OnFri);
+                                                print(Fri1.text);
+                                                print(Fri2.text);
+                                              });
+                                        }),
+                                  ],
+                                ),
+
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
                     ])
                   ],
                 ),
@@ -724,11 +808,11 @@ class _AddOfferScreenState extends State<AddOfferScreen> {
                   fallback: (context) =>
                       Center(child: Container(
                           width: 20,
-                          height: 10,
+                          height: 9,
                           child: CircularProgressIndicator())),
                   builder: (context) => elevate_button(
                       width: 200,
-                      height: 40,
+                      height: 32,
                       backround: mainColor,
                       text: 'Add',
                       function: () {

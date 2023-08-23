@@ -8,11 +8,18 @@ import 'package:lang_hub_admin/core/network/DioHelper.dart';
 import 'package:lang_hub_admin/show_offers/offer_model.dart';
 import 'package:meta/meta.dart';
 
+import '../home/models/teachers_model.dart';
+
 part 'offer_state.dart';
 
 class OfferCubit extends Cubit<OfferState> {
   OfferCubit() : super(OfferInitial());
   OfferModel? offerModel;
+  TeachersModel? teachersModel;
+  List<dynamic>? teacherData;
+  List<String> teacherNames = [];
+  int? SelectedItemIndex;
+  String? message;
   static OfferCubit get(context) => BlocProvider.of(context);
   void getOffers() {
     emit(OfferLoadingState());
@@ -119,5 +126,27 @@ class OfferCubit extends Cubit<OfferState> {
  }
   void refreshOffers() {
     getOffers();
+  }
+  void getTeachersForOffer(){
+    emit(GetTeacherForOfferLoading());
+    DioHelper.getData(url: "academy-admin/teachers").then((value) {
+       message=value.data["message"];
+      teachersModel = TeachersModel.fromJson(value.data);
+      print(teachersModel!.message);
+      message=teachersModel!.message;
+      print(teachersModel!.status);
+      teacherData = value.data["data"];
+      print(teacherData!.length);
+      if (teacherData != null) {
+        teacherNames = teacherData!
+            .map(
+                (teacher) => '${teacher['first_name']} ${teacher['last_name']}')
+            .toList();
+      }
+      print(teacherNames!.length);
+      emit(GetTeacherForOfferSuccess(message!));
+    }).catchError((onError){
+      emit(GetTeacherForOfferError(onError.toString()));
+    });
   }
 }
