@@ -4,7 +4,10 @@ part of 'activate_course_cubit.dart';
 abstract class ActivateCourseState {}
 
 class ActivateCourseInitial extends ActivateCourseState {}
-class ActivateCourseSuccessState extends ActivateCourseState {}
+class ActivateCourseSuccessState extends ActivateCourseState {
+  final String message;
+  ActivateCourseSuccessState(this.message);
+}
 class ActivateCourseLoadingState extends ActivateCourseState {}
 class ActivateCourseErrorState extends ActivateCourseState {
   final String error;

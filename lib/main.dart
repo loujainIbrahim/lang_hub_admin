@@ -25,7 +25,7 @@ void main() async{
   print(token);
   Widget widget = Container();
   if (token != null)
-    widget = LoginScreen();
+    widget = WaitingScreen();
   else
     widget = LoginScreen();
   runApp(MyApp(startWidget: widget,));

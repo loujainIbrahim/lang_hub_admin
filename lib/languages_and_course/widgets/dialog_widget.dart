@@ -6,6 +6,8 @@ import 'package:lang_hub_admin/add_offer/add_offer_screen.dart';
 import 'package:lang_hub_admin/core/color.dart';
 import 'package:lang_hub_admin/core/widgets/elevate_button.dart';
 
+import '../add_course/add_course_screen.dart';
+
 void DialogWidget(
   BuildContext context,
 ) {

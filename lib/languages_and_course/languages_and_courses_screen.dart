@@ -306,23 +306,6 @@ class _LanguagesAndCoursesScreenState extends State<LanguagesAndCoursesScreen> {
                                             ActivateCourseScreen(id: id)));
                               });
                             }),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0, right: 12),
-                          child: elevate_button(
-                              fontSizeText: 14,
-                              radius: 25,
-                              width: 20,
-                              height: 25,
-                              backround: mainColor,
-                              text: "delete exam",
-                              function: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ActivateCourseScreen(id: id)));
-                              }),
-                        )
                       ],
                     ),
                   )

@@ -37,14 +37,14 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     'Germany',
   ];
   final List<String> dropdownItems = [
-    'English',
-    'Spanish',
-    'French',
-    'Germany',
+    'english',
+    'germany',
+    'spanish',
+    'french',
   ];
   //String? selectedDropdownItem;
   String _base64Image = '';
-  String selectedDropdownItem = 'English';
+  String selectedDropdownItem = 'english';
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -55,9 +55,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
           if (state is AddCourseError) {
             print(state.error);
           } else if (state is AddCourseSuccess) {
-             if(state.message=="the selected value for hours invalid")
+             if(state.status!=200)
                showAlertDialog(context,state.message);
-            else ErrorSnackBar.show(context, state.message);
+            else {
+              ErrorSnackBar.show(context, state.message);
+              Navigator.pop(context);
+            }
           }
         },
         builder: (context, state) {
@@ -188,7 +191,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                                   color: mainColor,
                                 ),
                               ),
-                              ItemField(h:60,controller: nameCourse, ontap: () {}),
+                              ItemField(h:100,controller: nameCourse, ontap: () {}),
                             ],
                           ),
                         ),
@@ -205,7 +208,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                                   color: mainColor,
                                 ),
                               ),
-                              ItemField(h:60,
+                              ItemField(h:100,
                                   controller: numberOfHours, ontap: () {}),
                             ],
                           ),

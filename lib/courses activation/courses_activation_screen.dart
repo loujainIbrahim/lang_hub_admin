@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lang_hub_admin/core/widgets/snake_bar_widget.dart';
 import 'package:lang_hub_admin/courses%20activation/active_course_cubit.dart';
 import 'package:lang_hub_admin/courses%20activation/show_exam/show_exam_screen.dart';
 import 'package:lang_hub_admin/teachers/teacherDetails/teacher_details_screen.dart';
 
 import '../core/color.dart';
+import '../core/widgets/alert.dart';
 import '../core/widgets/elevate_button.dart';
 import '../exams/add_exams/add_exams_screen.dart';
 import 'course_details/course_details_screen.dart';
@@ -33,6 +35,9 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<ActiveCourseCubit, ActiveCourseState>(
       listener: (context, state) {
+        if (state is DeleteExamSuccessState) {
+          ErrorSnackBar.show(context, state.message);
+        }
         // TODO: implement listener
       },
       builder: (context, state) {
@@ -122,8 +127,8 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
                       child: GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4, // number of columns
-                          crossAxisSpacing: 7.0, // spacing between columns
-                          mainAxisSpacing: 7.0,
+                          crossAxisSpacing: 5.0, // spacing between columns
+                          mainAxisSpacing: 5.0,
                           // spacing between rows
                         ),
                         itemCount:
@@ -173,155 +178,150 @@ class _CoursesActivationScreenState extends State<CoursesActivationScreen> {
             MaterialPageRoute(
                 builder: (context) => CourseDetailsScreen(id: id)));
       },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          width: ScreenUtil().setWidth(286),
-          height: ScreenUtil().setHeight(1063),
-          decoration: BoxDecoration(
-            color: fillColorInTextFormField,
-            border: Border.all(
-              color: Colors.grey,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(30.0),
-          ),
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1.0,
-                  ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          color: fillColorInTextFormField,
+        ),
+        height: 200,
+        width: 200,
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 100,
+              child: ClipRRect(
                   borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30),
-                      topLeft: Radius.circular(30)),
-                ),
-                width: double.infinity,
-                height: ScreenUtil().setHeight(160),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(30),
-                        topLeft: Radius.circular(30)),
-                    child: (image == "" || image == null)
-                        ? Container(
-                            color: Colors.blue,
-                          )
-                        : Image.network(
-                            image!,
-                            fit: BoxFit.cover,
-                          )),
+                      topRight: Radius.circular(25),
+                      topLeft: Radius.circular(25)),
+                  child: (image == "" || image == null)
+                      ? Container(
+                          color: Colors.blue,
+                        )
+                      : Image.network(
+                          image!,
+                          fit: BoxFit.cover,
+                        )),
+            ),
+            Text(
+              name,
+              style: TextStyle(
+                  fontSize: ScreenUtil().setSp(22), // smaller font size
+                  color: mainColor,
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "given by " + given,
+              style: TextStyle(
+                fontSize: ScreenUtil().setSp(22), // smaller font size
+                color: mainColor,
               ),
-              Column(
-                //  crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                        fontSize: ScreenUtil().setSp(22), // smaller font size
-                        color: mainColor,
-                        fontWeight: FontWeight.bold),
+            ),
+            Text(
+              numberString + " s.p",
+              style: TextStyle(
+                fontSize: ScreenUtil().setSp(22), // smaller font size
+                color: mainColor,
+              ),
+            ),
+            Text(
+              "number of students: " + num,
+              style: TextStyle(
+                  fontSize: ScreenUtil().setSp(22), // smaller font size
+                  color: mainColor),
+            ),
+            Text(
+              "number of seats: " + seats,
+              style: TextStyle(
+                  fontSize: ScreenUtil().setSp(22), // smaller font size
+                  color: mainColor),
+            ),
+            Row(
+              children: [
+                Text(
+                  "start " + start,
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(22), // smaller font size
+                    color: mainColor,
                   ),
-                  Text(
-                    "given by " + given,
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(22), // smaller font size
-                      color: mainColor,
-                    ),
+                ),
+                Text(
+                  "end " + end,
+                  style: TextStyle(
+                    fontSize: ScreenUtil().setSp(22), // smaller font size
+                    color: mainColor,
                   ),
-                  Text(
-                    numberString + " s.p",
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(22), // smaller font size
-                      color: mainColor,
-                    ),
-                  ),
-                  Text(
-                    "number of students: " + num,
-                    style: TextStyle(
-                        fontSize: ScreenUtil().setSp(22), // smaller font size
-                        color: mainColor),
-                  ),
-                  Text(
-                    "number of seats: " + seats,
-                    style: TextStyle(
-                        fontSize: ScreenUtil().setSp(22), // smaller font size
-                        color: mainColor),
-                  ),
-                  Text(
-                    "start " + start,
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(22), // smaller font size
-                      color: mainColor,
-                    ),
-                  ),
-                  Text(
-                    "end " + end,
-                    style: TextStyle(
-                      fontSize: ScreenUtil().setSp(22), // smaller font size
-                      color: mainColor,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      (hasExam == 0)
-                          ? elevate_button(
-                              fontSizeText: 14,
-                              radius: 10,
-                              width: 18,
-                              height: 50,
-                              backround: mainColor,
-                              text: "add exam",
-                              function: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AddExamsScreen(
-                                              id: id,
-                                            )));
-                              })
-                          : elevate_button(
-                              fontSizeText: 14,
-                              radius: 10,
-                              width: 18,
-                              height: 50,
-                              backround: ff5C3A81,
-                              text: "add exam",
-                              function: () {}),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 3.0),
-                        child: elevate_button(
-                            fontSizeText: 14,
-                            radius: 10,
-                            width: 18,
-                            height: 50,
-                            backround: mainColor,
-                            text: "show exam",
-                            function: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          QuestionsScreen(id)));
-                            }),
-                      ),
-                    ],
-                  ),
-                  elevate_button(
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                (hasExam == 0)
+                    ? elevate_button(
+                        fontSizeText: 14,
+                        radius: 10,
+                        width: 14,
+                        height: 40,
+                        backround: mainColor,
+                        text: "add exam",
+                        function: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddExamsScreen(
+                                        id: id,
+                                      )));
+                        })
+                    : elevate_button(
+                        fontSizeText: 14,
+                        radius: 10,
+                        width: 14,
+                        height: 40,
+                        backround: ff5C3A81,
+                        text: "add exam",
+                        function: () {}),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: elevate_button(
                       fontSizeText: 14,
                       radius: 10,
-                      width: 18,
+                      width: 14,
                       height: 40,
-                      backround: ff5C3A81,
-                      text: "delete exam",
-                      function: () {}),
-                ],
-              ),
-            ],
-          ),
+                      backround: mainColor,
+                      text: "show exam",
+                      function: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => QuestionsScreen(id)));
+                      }),
+                ),
+              ],
+            ),
+            (hasExam == 0)
+                ? elevate_button(
+                    fontSizeText: 14,
+                    radius: 10,
+                    width: 14,
+                    height: 40,
+                    backround:ff5C3A81 ,
+                    text: "delete exam",
+                    function: () {
+                      showAlertDialog(
+                          context, "thers is no exam in this course");
+                    })
+                : elevate_button(
+                    fontSizeText: 14,
+                    radius: 10,
+                    width: 14,
+                    height: 40,
+                    backround: ff5C3A81,
+                    text: "delete exam",
+                    function: () {
+                      ActiveCourseCubit.get(context).deleteExam(id);
+                    }),
+          ],
         ),
       ),
     );

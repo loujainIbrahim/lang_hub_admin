@@ -154,7 +154,8 @@ class ActivateCourseCubit extends Cubit<ActivateCourseState> {
     });
     DioHelper.postData(url: "academy-admin/courses/$id/active", data: body)
         .then((value) {
-        emit(ActivateCourseSuccessState());
+          String message=value.data["message"];
+        emit(ActivateCourseSuccessState(message));
         print("success");
         // print(json.encode(value.data));
         print(value.data);

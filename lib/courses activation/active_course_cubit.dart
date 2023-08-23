@@ -8,18 +8,29 @@ part 'active_course_state.dart';
 
 class ActiveCourseCubit extends Cubit<ActiveCourseState> {
   ActiveCourseCubit() : super(ActiveCourseInitial());
- static ActiveCourseCubit get(context) => BlocProvider.of(context);
+  static ActiveCourseCubit get(context) => BlocProvider.of(context);
   ActivateCourseModel? activateCourseModel;
   void getActiveCourses(String language) {
     emit(ActiveCourseLoadingState());
-    DioHelper.getData(url: "academy-admin/courses/active", query: {"language":language})
-        .then((value) {
-      activateCourseModel=ActivateCourseModel.fromJson(value.data);
+    DioHelper.getData(
+        url: "academy-admin/courses/active",
+        query: {"language": language}).then((value) {
+      activateCourseModel = ActivateCourseModel.fromJson(value.data);
       print(value.data);
-          emit(ActiveCourseSuccessState(activateCourseModel!));
-    })
-        .catchError((onError) {
-          emit(ActiveCourseErrorState(onError.toString()));
+      emit(ActiveCourseSuccessState(activateCourseModel!));
+    }).catchError((onError) {
+      emit(ActiveCourseErrorState(onError.toString()));
+    });
+  }
+
+  void deleteExam(int id) {
+    emit(DeleteExamLoadingState());
+    DioHelper.deleteData(url: "academy-admin/exams/deleteExam/$id")
+        .then((value) {
+      emit(DeleteExamSuccessState(value.data["message"]));
+    }).catchError((onError) {
+      emit(DeleteExamSuccessState(onError.toString()));
+      print(onError.toString());
     });
   }
 }

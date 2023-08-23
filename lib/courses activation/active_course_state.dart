@@ -13,3 +13,15 @@ class ActiveCourseErrorState extends ActiveCourseState{
   String error;
   ActiveCourseErrorState(this.error);
 }
+
+
+class DeleteExamSuccessState extends ActiveCourseState{
+ // ActivateCourseModel activateCourseModel;
+  final String message;
+  DeleteExamSuccessState(this.message);
+}
+class DeleteExamLoadingState extends ActiveCourseState{}
+class DeleteExamErrorState extends ActiveCourseState{
+  String error;
+  DeleteExamErrorState(this.error);
+}

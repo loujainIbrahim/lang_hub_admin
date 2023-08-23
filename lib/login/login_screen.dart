@@ -35,7 +35,7 @@ class LoginScreen extends StatelessWidget {
               token = state.loginModel.token!;
               print(LoginCubit.get(context).message);
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
+                  MaterialPageRoute(builder: (context) => WaitingScreen()));
               print(LoginCubit.get(context).message);
 
               ErrorSnackBar.show(context, "successfully login");

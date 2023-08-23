@@ -97,8 +97,14 @@ class _ActivateCourseScreen extends State<ActivateCourseScreen> {
             showAlertDialog(context, message!);
           }
           if(state is ActivateCourseSuccessState){
-            ErrorSnackBar.show(context, "successfully activate");
-            Navigator.pop(context);
+   if(state.message=="the selected value of price is invalid")
+   {
+     showAlertDialog(context,state.message);
+   }
+   else{
+              ErrorSnackBar.show(context, state.message);
+              Navigator.pop(context);
+            }
           }
           if(state is ActivateCourseErrorState){
             showAlertDialog(context,state.error);

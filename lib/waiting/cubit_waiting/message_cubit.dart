@@ -18,14 +18,9 @@
 //     DioHelper.getData(url: "academy-admin/profile/accepted").then((value) {
 //       message = value.data["message"];
 //       print(message);
-//       emit(AcceptSuccessState(value.data["message"]));
 //     }).catchError((onError) {
-//       emit(AcceptErrorState(onError.toString()));
 //     });
 //   }
 //
-//   void refresh() {
-//     emit(WaitingInitial());
-//     getAccept();
-//   }
+//
 // }

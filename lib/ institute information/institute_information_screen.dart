@@ -82,7 +82,7 @@ class _InstituteInformationScreenState
               token=state.registerModel!.token!;
               ErrorSnackBar.show(context, state.registerModel!.massage!);
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()));
+                  MaterialPageRoute(builder: (context) => WaitingScreen()));
             } else {
               showAlertDialog(context, "email or password not correct");
             }

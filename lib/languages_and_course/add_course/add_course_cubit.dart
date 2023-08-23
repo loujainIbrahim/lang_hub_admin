@@ -43,7 +43,7 @@ class AddCourseCubit extends Cubit<AddCourseState> {
         .then((value) {
       //final course=AddCourseModel.fromJson(json.decode(value.data));
       print(json.encode(value.data));
-      emit(AddCourseSuccess(value.data["message"]));
+      emit(AddCourseSuccess(value.data["message"],value.data["status"]));
       print("succcessssss");
       print(value.data["message"]);
     }).catchError((onError) {

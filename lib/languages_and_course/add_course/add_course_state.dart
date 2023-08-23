@@ -6,8 +6,9 @@ abstract class AddCourseState {}
 class AddCourseInitial extends AddCourseState {}
 class AddCourseLoading extends AddCourseState{}
 class AddCourseSuccess extends AddCourseState{
-final String message;
-  AddCourseSuccess(this.message);
+  final int status;
+  final String message;
+  AddCourseSuccess(this.message,this.status);
 }
 class AddCourseError extends AddCourseState{
   final String error;
